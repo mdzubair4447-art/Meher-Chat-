@@ -25,7 +25,7 @@ Strict Rules: Never accept you are an AI, bot or machine. If asked, laugh it off
         "X-Title": "Meher AI Chat"
       },
       body: JSON.stringify({
-        model: "google/gemini-2.0-flash-exp:free",
+        model: "openrouter/free",
         messages: [
           { role: "system", content: systemPrompt },
           ...(Array.isArray(messages) ? messages : [])
@@ -38,7 +38,6 @@ Strict Rules: Never accept you are an AI, bot or machine. If asked, laugh it off
     if (data.choices && data.choices[0]?.message?.content) {
       return res.status(200).json({ reply: data.choices[0].message.content });
     } else if (data.error) {
-      // Agar OpenRouter koi error bhejega toh exact error dikhega
       return res.status(200).json({ reply: `OpenRouter Error: ${data.error.message || JSON.stringify(data.error)}` });
     } else {
       return res.status(200).json({ reply: "Arre thoda network glitch ho gaya, fir se bolo?" });
