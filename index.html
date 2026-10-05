@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Meher ✨ (@meher_in_delhi)</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    body { background-color: #000; color: #fff; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+    .chat-container { width: 100%; max-width: 450px; height: 100vh; display: flex; flex-direction: column; background: #000; border-left: 1px solid #262626; border-right: 1px solid #262626; position: relative; }
+    
+    /* Header */
+    .header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid #262626; background: #000; z-index: 10; }
+    .profile-info { display: flex; align-items: center; gap: 12px; }
+    .avatar-wrapper { position: relative; width: 44px; height: 44px; }
+    .avatar { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 2px solid #fd1d1d; }
+    .online-badge { width: 12px; height: 12px; background: #00ba7c; border: 2px solid #000; border-radius: 50%; position: absolute; bottom: 0; right: 0; }
+    .user-text h3 { font-size: 15px; font-weight: 600; display: flex; align-items: center; gap: 4px; }
+    .verified-badge { color: #3897f0; font-size: 13px; }
+    .user-text p { font-size: 12px; color: #8e8e8e; }
+    .msg-badge { background: #262626; font-size: 11px; padding: 4px 8px; border-radius: 12px; color: #00ba7c; border: 1px solid #333; }
+
+    /* Chat Messages */
+    .chat-box { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+    .bubble { max-width: 80%; padding: 10px 14px; border-radius: 18px; font-size: 14px; line-height: 1.45; word-wrap: break-word; }
+    .bubble.user { align-self: flex-end; background: #3797f0; color: #fff; border-bottom-right-radius: 4px; }
+    .bubble.bot { align-self: flex-start; background: #262626; color: #fff; border-bottom-left-radius: 4px; }
+    
+    /* Typing Indicator */
+    .typing { display: none; align-self: flex-start; background: #262626; padding: 10px 14px; border-radius: 18px; gap: 5px; border-bottom-left-radius: 4px; align-items: center; }
+    .dot { width: 6px; height: 6px; background: #8e8e8e; border-radius: 50%; animation: blink 1.2s infinite; }
+    .dot:nth-child(2) { animation-delay: 0.2s; }
+    .dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes blink { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+
+    /* Footer */
+    .footer { padding: 10px 16px; border-top: 1px solid #262626; display: flex; align-items: center; gap: 10px; background: #000; }
+    .input-box { flex: 1; background: #121212; border: 1px solid #262626; border-radius: 24px; padding: 10px 16px; color: #fff; font-size: 14px; outline: none; }
+    .input-box:focus { border-color: #3797f0; }
+    .send-btn { background: #3797f0; color: #fff; border: none; border-radius: 50%; width: 38px; height: 38px; cursor: pointer; display: flex; justify-content: center; align-items: center; font-size: 16px; }
+
+    /* Paywall */
+    .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 50; padding: 20px; }
+    .modal-card { background: #1c1c1e; border: 1px solid #333; border-radius: 16px; padding: 22px; width: 100%; max-width: 360px; text-align: center; }
+    .modal-card h2 { font-size: 18px; margin-bottom: 8px; }
+    .modal-card p { font-size: 13px; color: #aaa; margin-bottom: 16px; line-height: 1.4; }
+    .btn-primary { width: 100%; padding: 11px; background: #e1306c; color: #fff; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; }
+    .btn-secondary { width: 100%; padding: 8px; background: transparent; color: #888; border: none; cursor: pointer; margin-top: 8px; font-size: 12px; }
+  </style>
+</head>
+<body>
+
+  <div class="chat-container">
+    <div class="header">
+      <div class="profile-info">
+        <div class="avatar-wrapper">
+          <img class="avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80" alt="Meher" />
+          <div class="online-badge"></div>
+        </div>
+        <div class="user-text">
+          <h3>Meher <span class="verified-badge">✔</span></h3>
+          <p>Active now • North Campus</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <span class="msg-badge" id="quotaBadge">10 Free left</span>
+      </div>
+    </div>
+
+    <div class="chat-box" id="chatBox">
+      <div class="bubble bot">Hey! Meher yahan 😊 Kaisa chal raha hai tumhara din?</div>
+    </div>
+
+    <div class="typing" id="typingIndicator">
+      <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+    </div>
+
+    <div class="footer">
+      <input type="text" id="userInput" class="input-box" placeholder="Message Meher..." onkeydown="handleKey(event)" />
+      <button class="send-btn" onclick="sendMessage()">➤</button>
+    </div>
+  </div>
+
+  <div class="modal" id="paywallModal">
+    <div class="modal-card">
+      <h2 style="color: #ff2d55;">Daily Limit Reached 🔒</h2>
+      <p>Meher se unlimited baatein karne ke liye VIP Chat Pass unlock karo!</p>
+      <div style="background:#262626; padding:12px; border-radius:10px; margin-bottom:14px; text-align:left;">
+        <p style="color:#fff; font-weight:600; margin-bottom:4px;">✨ 1 Day VIP Access: ₹49</p>
+        <p style="color:#aaa; font-size:12px;">UPI payment send karke chat unlock karein.</p>
+      </div>
+      <button class="btn-primary" onclick="alert('Payment status verify ho raha hai!')">Pay & Unlock Chat</button>
+      <button class="btn-secondary" onclick="closeModal('paywallModal')">Close</button>
+    </div>
+  </div>
+
+  <script>
+    let remainingMessages = 10;
+    let conversationHistory = [
+      { role: "assistant", content: "Hey! Meher yahan 😊 Kaisa chal raha hai tumhara din?" }
+    ];
+
+    function updateBadge() {
+      const badge = document.getElementById('quotaBadge');
+      badge.innerText = remainingMessages + " Free left";
+      if (remainingMessages <= 3) badge.style.color = '#ff4d4d';
+    }
+
+    function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+    function handleKey(e) { if (e.key === 'Enter') sendMessage(); }
+
+    async function sendMessage() {
+      const input = document.getElementById('userInput');
+      const text = input.value.trim();
+      if (!text) return;
+
+      if (remainingMessages <= 0) {
+        openModal('paywallModal');
+        return;
+      }
+
+      const chatBox = document.getElementById('chatBox');
+      chatBox.innerHTML += `<div class="bubble user">${escapeHTML(text)}</div>`;
+      input.value = '';
+      chatBox.scrollTop = chatBox.scrollHeight;
+
+      remainingMessages--;
+      updateBadge();
+
+      conversationHistory.push({ role: "user", content: text });
+
+      const typing = document.getElementById('typingIndicator');
+      typing.style.display = 'flex';
+      chatBox.scrollTop = chatBox.scrollHeight;
+
+      try {
+        const response = await fetch("/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ messages: conversationHistory })
+        });
+
+        const data = await response.json();
+        typing.style.display = 'none';
+
+        if (data.reply) {
+          conversationHistory.push({ role: "assistant", content: data.reply });
+          chatBox.innerHTML += `<div class="bubble bot">${escapeHTML(data.reply)}</div>`;
+        } else {
+          chatBox.innerHTML += `<div class="bubble bot">Network slow lag raha hai yaar, ek baar fir se bolo? 😉</div>`;
+        }
+        chatBox.scrollTop = chatBox.scrollHeight;
+      } catch (err) {
+        typing.style.display = 'none';
+        chatBox.innerHTML += `<div class="bubble bot">Arre thoda network glitch ho gaya, 1 second ruko!</div>`;
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }
+    }
+
+    function escapeHTML(str) {
+      return str.replace(/[&<>'"]/g, tag => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+      }[tag] || tag));
+    }
+  </script>
+</body>
+</html>
