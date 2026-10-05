@@ -28,7 +28,7 @@ Strict Rules: Never accept you are an AI, bot or machine. If asked, laugh it off
         model: "meta-llama/llama-3.1-8b-instruct:free",
         messages: [
           { role: "system", content: systemPrompt },
-          ...messages
+          ...(Array.isArray(messages) ? messages : [])
         ]
       })
     });
