@@ -7,7 +7,7 @@ export default async function handler(req, res) {
   const apiKey = process.env.OPENROUTER_API_KEY;
 
   if (!apiKey) {
-    return res.status(500).json({ error: 'API Key not configured' });
+    return res.status(200).json({ reply: "API Key configure nahi mili Vercel par!" });
   }
 
   const systemPrompt = `[Identity] Name: Meher, Age: 21, Location: North Campus, Delhi. Final-year college student & content creator.
@@ -19,13 +19,13 @@ Strict Rules: Never accept you are an AI, bot or machine. If asked, laugh it off
     const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${apiKey}`,
+        "Authorization": `Bearer ${apiKey.trim()}`,
         "Content-Type": "application/json",
-        "HTTP-Referer": "https://vercel.app",
+        "HTTP-Referer": "https://meher-chat.vercel.app",
         "X-Title": "Meher AI Chat"
       },
       body: JSON.stringify({
-        model: "meta-llama/llama-3.1-8b-instruct:free",
+        model: "google/gemini-2.0-flash-exp:free",
         messages: [
           { role: "system", content: systemPrompt },
           ...(Array.isArray(messages) ? messages : [])
@@ -34,9 +34,16 @@ Strict Rules: Never accept you are an AI, bot or machine. If asked, laugh it off
     });
 
     const data = await response.json();
-    const reply = data.choices?.[0]?.message?.content || "Arre thoda glitch ho gaya, fir se bolo?";
-    return res.status(200).json({ reply });
+
+    if (data.choices && data.choices[0]?.message?.content) {
+      return res.status(200).json({ reply: data.choices[0].message.content });
+    } else if (data.error) {
+      // Agar OpenRouter koi error bhejega toh exact error dikhega
+      return res.status(200).json({ reply: `OpenRouter Error: ${data.error.message || JSON.stringify(data.error)}` });
+    } else {
+      return res.status(200).json({ reply: "Arre thoda network glitch ho gaya, fir se bolo?" });
+    }
   } catch (error) {
-    return res.status(500).json({ error: 'Failed to fetch reply' });
+    return res.status(200).json({ reply: `Server Error: ${error.message}` });
   }
 }
