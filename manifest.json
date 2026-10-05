@@ -1,0 +1,17 @@
+{
+  "name": "Meher AI Chat",
+  "short_name": "Meher",
+  "description": "Chat with Meher - 21 yr old Delhi student",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "icons": [
+    {
+      "src": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=512&q=80",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
