@@ -337,12 +337,10 @@
       ];
       let lastIndex = -1;
 
-      // Real Message Sender with AI Backend Hook
       async function sendMessage() {
         const text = input.value.trim();
         if (!text) return;
 
-        // User Message append
         const userMsg = document.createElement("div");
         userMsg.className = "msg user";
         userMsg.innerHTML = `${text.replace(/</g, "&lt;")}<div class="time">Just now</div>`;
@@ -352,7 +350,6 @@
 
         chatHistory.push({ role: "user", content: text });
 
-        // Typing effect indicator
         const typingIndicator = document.createElement("div");
         typingIndicator.className = "msg bot";
         typingIndicator.id = "typingIndicator";
@@ -361,7 +358,6 @@
         chatBox.scrollTop = chatBox.scrollHeight;
 
         try {
-          // Backend Vercel AI API call
           const res = await fetch("/api/chat", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -374,11 +370,8 @@
             appendBotMessage(data.reply);
             return;
           }
-        } catch (e) {
-          // Fallback if backend is busy
-        }
+        } catch (e) {}
 
-        // Realistic Fallback (Random non-repeating smart Delhi vibe)
         setTimeout(() => {
           if (document.getElementById("typingIndicator")) {
             typingIndicator.remove();
