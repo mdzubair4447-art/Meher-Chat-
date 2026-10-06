@@ -64,6 +64,8 @@
     .vn-wave-area { flex: 1; display: flex; flex-direction: column; gap: 4px; }
     .vn-waves { height: 18px; display: flex; align-items: center; gap: 3px; }
     .vn-bar { width: 3px; background: #52525b; border-radius: 2px; }
+    .vn-bar:nth-child(even) { height: 14px; }
+    .vn-bar:nth-child(odd) { height: 8px; }
     .vn-bar.active { background: var(--primary-blue); }
     .vn-timer { font-size: 10px; color: var(--text-muted); align-self: flex-end; }
 
@@ -273,29 +275,5 @@
       <div class="sheet-drag-handle"></div>
       <div class="gift-header">
         <h3>Talk Time Packages 📞</h3>
-        <p>Meher se direct call par baat karne ke liye minutes unlock karein</p>
-      </div>
-      <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:18px;">
-        <div class="benefit-item" style="cursor:pointer;" id="planQuickCall">
-          <i class="fa-solid fa-bolt benefit-icon"></i>
-          <div class="benefit-info">
-            <h4>Quick call (5 min)</h4>
-            <p>Short & sweet baatein • ₹25</p>
-          </div>
-        </div>
-        <div class="benefit-item" style="border-color:var(--accent-pink); cursor:pointer;" id="planLambiBaat">
-          <i class="fa-solid fa-heart benefit-icon"></i>
-          <div class="benefit-info">
-            <h4>Lambi baat (25 min) - Most Popular</h4>
-            <p>Late night deep chat • ₹100</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Subscription Paywall Modal -->
-  <div class="paywall-modal" id="paywallModal">
-    <div>
-      <div style="display:flex; justify-content:flex-end;">
-        <button id="btnClosePaywall" style="ba
+        <p
+              
