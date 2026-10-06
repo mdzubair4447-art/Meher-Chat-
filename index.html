@@ -4,276 +4,248 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>Meher ✨ (@meher_in_delhi)</title>
-
   <link rel="manifest" href="/manifest.json" />
   <meta name="theme-color" content="#09090b" />
-  <meta name="mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-
   <style>
     :root {
-      --bg-dark: #09090b;
-      --card-bg: #141417;
-      --bubble-bot: #1c1c21;
-      --accent-purple: #7928ca;
-      --accent-pink: #ff0080;
-      --primary-blue: #3897f0;
-      --border-color: #27272a;
-      --text-muted: #a1a1aa;
+      --bg: #09090b; --card: #141417; --bot: #1c1c21;
+      --purple: #7928ca; --pink: #ff0080; --blue: #3897f0;
+      --border: #27272a; --text-muted: #a1a1aa;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; -webkit-tap-highlight-color: transparent; }
-    body { background-color: #000; color: #fff; display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow: hidden; }
-    
-    .app-viewport { width: 100%; max-width: 460px; height: 100vh; display: flex; flex-direction: column; background: var(--bg-dark); position: relative; overflow: hidden; border-left: 1px solid var(--border-color); border-right: 1px solid var(--border-color); }
-
-    /* Top Navigation Bar */
-    .top-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; background: rgba(9, 9, 11, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border-color); z-index: 30; }
-    .header-user { display: flex; align-items: center; gap: 10px; cursor: pointer; }
-    .avatar-ring { position: relative; width: 42px; height: 42px; }
-    .avatar-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent-purple); }
-    .live-dot { width: 11px; height: 11px; background: #10b981; border: 2px solid var(--bg-dark); border-radius: 50%; position: absolute; bottom: 0; right: 0; }
-    .header-titles h3 { font-size: 15px; font-weight: 600; display: flex; align-items: center; gap: 5px; }
-    .verified-icon { color: var(--primary-blue); font-size: 13px; }
-    .header-titles p { font-size: 11px; color: var(--text-muted); }
-    
-    .header-actions { display: flex; align-items: center; gap: 10px; }
-    .btn-renew-pill { background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink)); color: #fff; font-size: 11px; font-weight: 600; padding: 6px 12px; border-radius: 20px; border: none; cursor: pointer; box-shadow: 0 2px 8px rgba(121, 40, 202, 0.4); }
-    .header-icon-btn { background: none; border: none; color: #fff; font-size: 17px; cursor: pointer; padding: 4px; }
-
-    /* Floating Top Warning Banner */
-    .top-banner-warning { background: linear-gradient(90deg, #1c1124, #261226); border-bottom: 1px solid rgba(255, 0, 128, 0.3); padding: 8px 14px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
-    .top-banner-warning span { color: #f472b6; font-weight: 500; }
-    .top-banner-warning a { color: #fff; font-weight: 600; text-decoration: none; cursor: pointer; }
-
-    /* Chat Stage */
-    .chat-stage { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 14px; scroll-behavior: smooth; }
-    .date-marker { align-self: center; font-size: 11px; color: var(--text-muted); background: #18181b; padding: 3px 10px; border-radius: 12px; }
-
-    /* Missed Call Widget */
-    .missed-call-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 14px; padding: 12px 14px; display: flex; align-items: center; justify-content: space-between; width: 85%; align-self: flex-start; }
-    .call-meta { display: flex; align-items: center; gap: 12px; }
-    .call-meta i { font-size: 20px; color: #ef4444; }
-    .call-text h4 { font-size: 13px; font-weight: 600; }
-    .call-text p { font-size: 11px; color: var(--text-muted); }
-    .btn-call-back { background: var(--bubble-bot); border: 1px solid #3f3f46; color: #fff; font-size: 11px; padding: 6px 12px; border-radius: 8px; font-weight: 600; cursor: pointer; }
-
-    /* Voice Note Bubble */
-    .voice-note-card { background: var(--bubble-bot); border: 1px solid var(--border-color); border-radius: 18px 18px 18px 4px; padding: 10px 14px; width: 82%; align-self: flex-start; display: flex; align-items: center; gap: 12px; }
-    .vn-play-btn { width: 36px; height: 36px; border-radius: 50%; background: var(--primary-blue); border: none; color: #fff; display: flex; justify-content: center; align-items: center; cursor: pointer; font-size: 13px; flex-shrink: 0; }
-    .vn-wave-area { flex: 1; display: flex; flex-direction: column; gap: 4px; }
-    .vn-waves { height: 18px; display: flex; align-items: center; gap: 3px; }
-    .vn-bar { width: 3px; background: #52525b; border-radius: 2px; }
-    .vn-bar:nth-child(even) { height: 14px; }
-    .vn-bar:nth-child(odd) { height: 8px; }
-    .vn-bar.active { background: var(--primary-blue); }
-    .vn-timer { font-size: 10px; color: var(--text-muted); align-self: flex-end; }
-
-    /* Locked Photo Card ("Tap to reveal") */
-    .locked-media-card { width: 78%; align-self: flex-start; background: #000; border: 1px solid var(--border-color); border-radius: 16px; overflow: hidden; position: relative; cursor: pointer; }
-    .locked-media-blur { width: 100%; height: 220px; object-fit: cover; filter: blur(24px) brightness(0.6); transform: scale(1.1); }
-    .locked-media-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; background: rgba(0, 0, 0, 0.45); }
-    .lock-circle { width: 44px; height: 44px; border-radius: 50%; background: rgba(255, 255, 255, 0.15); display: flex; align-items: center; justify-content: center; font-size: 18px; }
-    .locked-media-overlay span { font-size: 13px; font-weight: 600; letter-spacing: 0.3px; }
-    .locked-media-time { position: absolute; bottom: 8px; right: 10px; font-size: 10px; color: #ccc; }
-
-    /* Standard Chat Bubbles */
-    .msg-bubble { max-width: 80%; padding: 10px 14px; border-radius: 18px; font-size: 13.5px; line-height: 1.45; word-wrap: break-word; position: relative; }
-    .msg-bubble.bot { align-self: flex-start; background: var(--bubble-bot); color: #fff; border-bottom-left-radius: 4px; border: 1px solid var(--border-color); }
-    .msg-bubble.user { align-self: flex-end; background: var(--primary-blue); color: #fff; border-bottom-right-radius: 4px; }
-    .msg-time { font-size: 9.5px; color: rgba(255, 255, 255, 0.55); margin-top: 4px; text-align: right; }
-
-    /* Typing Dots */
-    .typing-box { display: none; align-self: flex-start; background: var(--bubble-bot); padding: 10px 14px; border-radius: 18px 18px 18px 4px; gap: 5px; border: 1px solid var(--border-color); align-items: center; }
-    .dot { width: 5px; height: 5px; background: var(--text-muted); border-radius: 50%; animation: pulse 1.2s infinite; }
-    .dot:nth-child(2) { animation-delay: 0.2s; }
-    .dot:nth-child(3) { animation-delay: 0.4s; }
-    @keyframes pulse { 0%, 100% { opacity: 0.3; transform: scale(0.9); } 50% { opacity: 1; transform: scale(1.1); } }
-
-    /* Footer / Input Bar */
-    .chat-footer { padding: 10px 12px; background: var(--bg-dark); border-top: 1px solid var(--border-color); display: flex; align-items: center; gap: 8px; z-index: 20; }
-    .btn-gift-rose { background: #271424; border: 1px solid #581c47; width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; cursor: pointer; flex-shrink: 0; }
-    .input-wrapper { flex: 1; position: relative; display: flex; align-items: center; }
-    .app-input { width: 100%; background: #18181b; border: 1px solid var(--border-color); border-radius: 24px; padding: 10px 42px 10px 16px; color: #fff; font-size: 13.5px; outline: none; }
-    .btn-mic-icon { position: absolute; right: 12px; color: var(--text-muted); cursor: pointer; font-size: 15px; }
-    .btn-send { background: var(--primary-blue); color: #fff; border: none; border-radius: 50%; width: 38px; height: 38px; cursor: pointer; display: flex; justify-content: center; align-items: center; font-size: 14px; flex-shrink: 0; }
-
-    /* 3-Dots Dropdown Menu */
-    .menu-dropdown { display: none; position: absolute; top: 60px; right: 14px; background: #18181b; border: 1px solid var(--border-color); border-radius: 14px; width: 175px; z-index: 50; box-shadow: 0 10px 25px rgba(0,0,0,0.6); overflow: hidden; }
-    .menu-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; font-size: 13px; color: #e4e4e7; cursor: pointer; }
-    .menu-item:active { background: #27272a; }
-    .menu-item.danger { color: #f87171; border-top: 1px solid var(--border-color); }
-
-    /* Bottom Sheets & Modals */
-    .modal-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(4px); z-index: 100; justify-content: center; align-items: flex-end; }
-    .sheet-card { background: #121215; border-top: 1px solid #333; border-radius: 24px 24px 0 0; width: 100%; max-width: 460px; padding: 20px 18px; max-height: 85vh; overflow-y: auto; }
-    .sheet-drag-handle { width: 38px; height: 4px; background: #3f3f46; border-radius: 3px; margin: 0 auto 16px; }
-
-    .gift-header { text-align: center; margin-bottom: 18px; }
-    .gift-header h3 { font-size: 17px; margin-bottom: 4px; }
-    .gift-header p { font-size: 12px; color: var(--text-muted); }
-    .gift-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
-    .gift-card { background: #18181b; border: 1px solid var(--border-color); border-radius: 14px; padding: 12px 8px; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; }
-    .gift-card.selected { border-color: var(--accent-pink); background: #251222; }
-    .gift-card .emoji { font-size: 28px; }
-    .gift-card .name { font-size: 12px; font-weight: 500; }
-    .gift-card .price { font-size: 11px; color: var(--text-muted); }
-    .btn-send-gift { width: 100%; padding: 13px; background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink)); color: #fff; border: none; border-radius: 12px; font-weight: 600; font-size: 14px; cursor: pointer; }
-
-    /* Subscription Paywall Modal */
-    .paywall-modal { display: none; position: fixed; inset: 0; background: #09090b; z-index: 120; flex-direction: column; padding: 24px 20px; overflow-y: auto; justify-content: space-between; }
-    .paywall-hero { text-align: center; margin-top: 10px; }
-    .paywall-avatar { width: 84px; height: 84px; border-radius: 50%; object-fit: cover; border: 3px solid var(--accent-purple); margin-bottom: 14px; }
-    .paywall-title { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
-    .paywall-price { font-size: 30px; font-weight: 800; color: #fff; margin: 10px 0; }
-    .paywall-price span { font-size: 14px; color: var(--text-muted); font-weight: 400; }
-    .benefits-list { display: flex; flex-direction: column; gap: 14px; margin: 24px 0; }
-    .benefit-item { display: flex; align-items: center; gap: 14px; background: #141417; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--border-color); }
-    .benefit-icon { font-size: 20px; color: var(--accent-pink); }
-    .benefit-info h4 { font-size: 13px; font-weight: 600; }
-    .benefit-info p { font-size: 11px; color: var(--text-muted); }
-    .btn-renew-main { width: 100%; padding: 14px; background: linear-gradient(135deg, #6366f1, #a855f7); color: #fff; border: none; border-radius: 12px; font-weight: 700; font-size: 15px; cursor: pointer; }
-    .btn-skip { background: none; border: none; color: var(--text-muted); font-size: 12px; margin-top: 12px; cursor: pointer; text-decoration: underline; width: 100%; text-align: center; }
-
-    /* Profile Slide Page */
-    .profile-page { display: none; position: fixed; inset: 0; background: #000; z-index: 110; flex-direction: column; overflow-y: auto; }
-    .profile-nav { display: flex; align-items: center; padding: 14px 16px; border-bottom: 1px solid var(--border-color); }
-    .profile-content { padding: 20px 16px; display: flex; flex-direction: column; align-items: center; }
-    .profile-big-avatar { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent-purple); margin-bottom: 10px; }
-    .voice-intro-bar { width: 100%; background: #18181b; border: 1px solid var(--border-color); border-radius: 30px; padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; margin: 16px 0; cursor: pointer; }
-    .voice-intro-bar span { font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
-    .profile-bio { font-size: 12.5px; color: #d4d4d8; line-height: 1.5; text-align: center; margin-bottom: 20px; }
-    .photo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: 100%; }
-    .photo-grid img { width: 100%; height: 130px; object-fit: cover; border-radius: 10px; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
+    body { background: #000; color: #fff; display: flex; justify-content: center; height: 100vh; overflow: hidden; }
+    .viewport { width: 100%; max-width: 460px; height: 100vh; display: flex; flex-direction: column; background: var(--bg); position: relative; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; background: rgba(9,9,11,0.95); border-bottom: 1px solid var(--border); z-index: 10; }
+    .user-info { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+    .avatar-box { position: relative; width: 42px; height: 42px; }
+    .avatar-box img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 2px solid var(--purple); }
+    .dot-live { width: 10px; height: 10px; background: #10b981; border: 2px solid var(--bg); border-radius: 50%; position: absolute; bottom: 0; right: 0; }
+    .titles h3 { font-size: 15px; font-weight: 600; display: flex; align-items: center; gap: 4px; }
+    .titles p { font-size: 11px; color: var(--text-muted); }
+    .header-btns { display: flex; align-items: center; gap: 8px; }
+    .pill-btn { background: linear-gradient(135deg, var(--purple), var(--pink)); color: #fff; font-size: 11px; font-weight: 600; padding: 6px 12px; border-radius: 20px; border: none; cursor: pointer; }
+    .icon-btn { background: none; border: none; color: #fff; font-size: 16px; padding: 6px; cursor: pointer; }
+    .top-bar { background: #1a0f1d; border-bottom: 1px solid rgba(255,0,128,0.3); padding: 8px 14px; display: flex; justify-content: space-between; font-size: 12px; }
+    .top-bar span { color: #f472b6; }
+    .top-bar a { color: #fff; font-weight: 600; text-decoration: none; cursor: pointer; }
+    .chat-box { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 12px; }
+    .tag-today { align-self: center; font-size: 11px; color: var(--text-muted); background: #18181b; padding: 3px 10px; border-radius: 12px; }
+    .missed-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; width: 85%; }
+    .missed-card i { color: #ef4444; font-size: 18px; margin-right: 10px; }
+    .missed-card button { background: var(--bot); border: 1px solid #3f3f46; color: #fff; font-size: 11px; padding: 5px 10px; border-radius: 6px; cursor: pointer; }
+    .vn-card { background: var(--bot); border: 1px solid var(--border); border-radius: 16px 16px 16px 4px; padding: 10px 14px; width: 80%; display: flex; align-items: center; gap: 10px; }
+    .vn-play { width: 34px; height: 34px; border-radius: 50%; background: var(--blue); border: none; color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+    .locked-card { width: 75%; background: #000; border: 1px solid var(--border); border-radius: 14px; overflow: hidden; position: relative; cursor: pointer; height: 180px; }
+    .locked-card img { width: 100%; height: 100%; object-fit: cover; filter: blur(20px) brightness(0.6); }
+    .locked-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; }
+    .msg { max-width: 80%; padding: 10px 14px; border-radius: 16px; font-size: 13.5px; line-height: 1.4; word-break: break-word; }
+    .msg.bot { align-self: flex-start; background: var(--bot); border-bottom-left-radius: 4px; border: 1px solid var(--border); }
+    .msg.user { align-self: flex-end; background: var(--blue); border-bottom-right-radius: 4px; }
+    .msg .time { font-size: 9px; opacity: 0.6; text-align: right; margin-top: 4px; }
+    .footer { padding: 10px 12px; background: var(--bg); border-top: 1px solid var(--border); display: flex; align-items: center; gap: 8px; }
+    .gift-btn { background: #271424; border: 1px solid #581c47; width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; cursor: pointer; }
+    .input-box { flex: 1; position: relative; }
+    .input-box input { width: 100%; background: #18181b; border: 1px solid var(--border); border-radius: 20px; padding: 10px 38px 10px 14px; color: #fff; font-size: 13.5px; outline: none; }
+    .input-box i { position: absolute; right: 12px; top: 12px; color: var(--text-muted); cursor: pointer; }
+    .send-btn { background: var(--blue); color: #fff; border: none; width: 38px; height: 38px; border-radius: 50%; cursor: pointer; }
+    .sheet-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 100; justify-content: center; align-items: flex-end; }
+    .sheet { background: #121215; border-top: 1px solid #333; border-radius: 20px 20px 0 0; width: 100%; max-width: 460px; padding: 20px 16px; }
+    .gift-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 14px 0; }
+    .gift-item { background: #18181b; border: 1px solid var(--border); border-radius: 12px; padding: 10px 4px; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; }
+    .gift-item.active { border-color: var(--pink); background: #251222; }
+    .btn-action { width: 100%; padding: 12px; background: linear-gradient(135deg, var(--purple), var(--pink)); color: #fff; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; }
+    .full-modal { display: none; position: fixed; inset: 0; background: #09090b; z-index: 110; flex-direction: column; padding: 20px; justify-content: space-between; overflow-y: auto; }
   </style>
 </head>
 <body>
-
-  <div class="app-viewport">
-    <!-- Top Header -->
-    <div class="top-header">
-      <div class="header-user" id="btnOpenProfileHeader">
-        <div class="avatar-ring">
-          <img class="avatar-img" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80" alt="Meher" />
-          <div class="live-dot"></div>
+  <div class="viewport">
+    <div class="header">
+      <div class="user-info" id="btnProfile">
+        <div class="avatar-box">
+          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80" alt="Meher" />
+          <div class="dot-live"></div>
         </div>
-        <div class="header-titles">
-          <h3>Meher <i class="fa-solid fa-circle-check verified-icon"></i></h3>
+        <div class="titles">
+          <h3>Meher <i class="fa-solid fa-circle-check" style="color:var(--blue); font-size:12px;"></i></h3>
           <p>Online • North Campus, Delhi</p>
         </div>
       </div>
-      <div class="header-actions">
-        <button class="btn-renew-pill" id="btnRenewHeader">Renew Plan</button>
-        <button class="header-icon-btn" id="btnPhoneHeader"><i class="fa-solid fa-phone"></i></button>
-        <button class="header-icon-btn" id="btnMenuToggle"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+      <div class="header-btns">
+        <button class="pill-btn" id="btnRenew">Renew Plan</button>
+        <button class="icon-btn" id="btnCall"><i class="fa-solid fa-phone"></i></button>
       </div>
     </div>
 
-    <!-- 3-Dots Menu -->
-    <div class="menu-dropdown" id="menuDropdown">
-      <div class="menu-item" id="menuOptProfile"><i class="fa-regular fa-user"></i> Profile</div>
-      <div class="menu-item" id="menuOptTalkTime"><i class="fa-solid fa-stopwatch"></i> Talk time</div>
-      <div class="menu-item" id="menuOptSettings"><i class="fa-solid fa-gear"></i> Settings</div>
-      <div class="menu-item danger" id="menuOptClear"><i class="fa-solid fa-trash-can"></i> Clear Chat</div>
-    </div>
-
-    <!-- Floating Top Warning Banner -->
-    <div class="top-banner-warning">
+    <div class="top-bar">
       <span>Your premium plan is cancelled!</span>
-      <a href="javascript:void(0)" id="btnBannerRenew">Renew Now <i class="fa-solid fa-arrow-right"></i></a>
+      <a id="btnBanner">Renew Now →</a>
     </div>
 
-    <!-- Main Chat Stage -->
-    <div class="chat-stage" id="chatStage">
-      <div class="date-marker">Today</div>
+    <div class="chat-box" id="chatBox">
+      <div class="tag-today">Today</div>
 
-      <!-- Missed Call Notice -->
-      <div class="missed-call-card">
-        <div class="call-meta">
+      <div class="missed-card">
+        <div style="display:flex; align-items:center;">
           <i class="fa-solid fa-phone-slash"></i>
-          <div class="call-text">
-            <h4>Meher tried calling you</h4>
-            <p>Missed call • Just now</p>
-          </div>
+          <div><h4 style="font-size:13px;">Meher tried calling you</h4><p style="font-size:10px; color:var(--text-muted);">Missed call • Just now</p></div>
         </div>
-        <button class="btn-call-back" id="btnCallBack">Call Back Now</button>
+        <button id="btnCallBack">Call Back</button>
       </div>
 
-      <!-- Character Audio Voice Note -->
-      <div class="voice-note-card">
-        <button class="vn-play-btn" id="btnPlayVN"><i class="fa-solid fa-play"></i></button>
-        <div class="vn-wave-area">
-          <div class="vn-waves">
-            <div class="vn-bar" style="height: 12px;"></div>
-            <div class="vn-bar active" style="height: 18px;"></div>
-            <div class="vn-bar active" style="height: 9px;"></div>
-            <div class="vn-bar" style="height: 15px;"></div>
-            <div class="vn-bar" style="height: 6px;"></div>
-            <div class="vn-bar" style="height: 16px;"></div>
-            <div class="vn-bar" style="height: 10px;"></div>
-            <div class="vn-bar" style="height: 14px;"></div>
-          </div>
-          <span class="vn-timer">0:15</span>
-        </div>
+      <div class="vn-card">
+        <button class="vn-play" id="btnVoice"><i class="fa-solid fa-play"></i></button>
+        <div style="flex:1;"><p style="font-size:12px; font-weight:500;">Voice message</p><span style="font-size:10px; color:var(--text-muted);">0:15</span></div>
       </div>
 
-      <!-- Locked Photo Card -->
-      <div class="locked-media-card" id="btnLockedCard">
-        <img class="locked-media-blur" src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=500&q=80" alt="Exclusive" />
-        <div class="locked-media-overlay">
-          <div class="lock-circle"><i class="fa-solid fa-lock"></i></div>
-          <span>Tap to reveal</span>
-        </div>
-        <div class="locked-media-time">Just now</div>
+      <div class="locked-card" id="btnLocked">
+        <img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=500&q=80" />
+        <div class="locked-center"><i class="fa-solid fa-lock" style="font-size:20px;"></i><span style="font-size:13px; font-weight:600;">Tap to reveal</span></div>
       </div>
 
-      <!-- Intro Text Message -->
-      <div class="msg-bubble bot">
+      <div class="msg bot">
         Chalo, finally hum baat kar rahe hain! Main Meher... Delhi se hoon aur thodi dramebaaz bhi 😉 Tum batao, kya chal raha hai?
-        <div class="msg-time">1:22 AM</div>
+        <div class="time">Just now</div>
       </div>
     </div>
 
-    <!-- Typing Loader -->
-    <div class="typing-box" id="typingBox">
-      <div class="dot"></div><div class="dot"></div><div class="dot"></div>
-    </div>
-
-    <!-- Input Footer Bar -->
-    <div class="chat-footer">
-      <div class="btn-gift-rose" id="btnRoseGift">🌹</div>
-      <div class="input-wrapper">
-        <input type="text" id="chatInput" class="app-input" placeholder="Message Meher..." />
-        <i class="fa-solid fa-microphone btn-mic-icon" id="btnMicIcon"></i>
+    <div class="footer">
+      <div class="gift-btn" id="btnRose">🌹</div>
+      <div class="input-box">
+        <input type="text" id="userInput" placeholder="Message Meher..." />
+        <i class="fa-solid fa-microphone" id="btnMic"></i>
       </div>
-      <button class="btn-send" id="btnSend"><i class="fa-solid fa-paper-plane"></i></button>
+      <button class="send-btn" id="btnSend"><i class="fa-solid fa-paper-plane"></i></button>
     </div>
   </div>
-
-  <!-- Gift Bottom Sheet -->
-  <div class="modal-backdrop" id="giftSheet">
-    <div class="sheet-card">
-      <div class="sheet-drag-handle"></div>
-      <div class="gift-header">
-        <h3>Bhejo ek Pyaara Gift 🎁</h3>
-        <p>Express your feelings with gifts Meher will love!</p>
-      </div>
+  <!-- Gift Sheet -->
+  <div class="sheet-bg" id="giftSheet">
+    <div class="sheet">
+      <h3 style="text-align:center; font-size:16px;">Bhejo ek Pyaara Gift 🎁</h3>
       <div class="gift-grid">
-        <div class="gift-card selected" data-price="9"><span class="emoji">🌹</span><span class="name">Lal Gulab</span><span class="price">₹9</span></div>
-        <div class="gift-card" data-price="19"><span class="emoji">🍫</span><span class="name">Dairy Milk</span><span class="price">₹19</span></div>
-        <div class="gift-card" data-price="49"><span class="emoji">🧸</span><span class="name">Teddy</span><span class="price">₹49</span></div>
-        <div class="gift-card" data-price="29"><span class="emoji">✨</span><span class="name">Jhumka</span><span class="price">₹29</span></div>
-        <div class="gift-card" data-price="29"><span class="emoji">💫</span><span class="name">Choodiya</span><span class="price">₹29</span></div>
+        <div class="gift-item active" data-price="9"><span style="font-size:24px;">🌹</span><span style="font-size:11px;">Lal Gulab</span><span style="font-size:10px; color:var(--text-muted);">₹9</span></div>
+        <div class="gift-item" data-price="19"><span style="font-size:24px;">🍫</span><span style="font-size:11px;">Dairy Milk</span><span style="font-size:10px; color:var(--text-muted);">₹19</span></div>
+        <div class="gift-item" data-price="49"><span style="font-size:24px;">🧸</span><span style="font-size:11px;">Teddy</span><span style="font-size:10px; color:var(--text-muted);">₹49</span></div>
       </div>
-      <button class="btn-send-gift" id="giftSubmitBtn">Send Gift (₹9)</button>
+      <button class="btn-action" id="btnSendGift">Send Gift (₹9)</button>
     </div>
   </div>
 
-  <!-- Talk Time Drawer -->
-  <div class="modal-backdrop" id="talkTimeSheet">
-    <div class="sheet-card">
-      <div class="sheet-drag-handle"></div>
-      <div class="gift-header">
-        <h3>Talk Time Packages 📞</h3>
-        <p
-              
+  <!-- Paywall Modal -->
+  <div class="full-modal" id="paywallModal">
+    <div style="text-align:right;"><button id="btnClosePay" style="background:none; border:none; color:#aaa; font-size:22px; cursor:pointer;">✕</button></div>
+    <div style="text-align:center;">
+      <h2 style="font-size:20px; margin-bottom:8px;">Renew VIP Access</h2>
+      <p style="color:var(--text-muted); font-size:13px;">Unlimited Chats & Private Calls with Meher</p>
+      <h1 style="font-size:32px; margin:16px 0;">₹49 <span style="font-size:14px; color:var(--text-muted);">/ Day Pass</span></h1>
+    </div>
+    <div>
+      <button class="btn-action" id="btnPayUPI">Pay via UPI & Unlock</button>
+      <button id="btnSkipPay" style="background:none; border:none; color:var(--text-muted); font-size:12px; width:100%; margin-top:12px; cursor:pointer;">Skip for now</button>
+    </div>
+  </div>
+
+  <!-- Profile Slide Modal -->
+  <div class="full-modal" id="profileModal">
+    <div style="display:flex; align-items:center;">
+      <button id="btnCloseProf" style="background:none; border:none; color:#fff; font-size:18px; cursor:pointer;"><i class="fa-solid fa-arrow-left"></i></button>
+      <span style="margin-left:14px; font-weight:600;">Profile</span>
+    </div>
+    <div style="text-align:center; padding:20px 0;">
+      <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80" style="width:80px; height:80px; border-radius:50%; border:2px solid var(--purple);" />
+      <h3 style="margin-top:10px;">Meher ✨</h3>
+      <p style="font-size:12px; color:var(--text-muted); margin-bottom:14px;">North Campus, Delhi</p>
+      <p style="font-size:13px; color:#d4d4d8; line-height:1.4;">Delhi University student. Late-night deep conversations ki deewani. Always a message away!</p>
+    </div>
+    <button class="btn-action" id="btnCloseProfBtn">Back to Chat</button>
+  </div>
+    <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      let giftAmount = 9;
+      const payModal = document.getElementById("paywallModal");
+      const profModal = document.getElementById("profileModal");
+      const giftSheet = document.getElementById("giftSheet");
+      const chatBox = document.getElementById("chatBox");
+      const input = document.getElementById("userInput");
+
+      const tap = (id, fn) => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener("click", fn);
+      };
+
+      tap("btnRenew", () => payModal.style.display = "flex");
+      tap("btnBanner", () => payModal.style.display = "flex");
+      tap("btnLocked", () => payModal.style.display = "flex");
+      tap("btnClosePay", () => payModal.style.display = "none");
+      tap("btnSkipPay", () => payModal.style.display = "none");
+
+      tap("btnProfile", () => profModal.style.display = "flex");
+      tap("btnCloseProf", () => profModal.style.display = "none");
+      tap("btnCloseProfBtn", () => profModal.style.display = "none");
+
+      tap("btnCall", () => payModal.style.display = "flex");
+      tap("btnCallBack", () => payModal.style.display = "flex");
+      tap("btnRose", () => giftSheet.style.display = "flex");
+
+      giftSheet.addEventListener("click", (e) => {
+        if (e.target === giftSheet) giftSheet.style.display = "none";
+      });
+
+      document.querySelectorAll(".gift-item").forEach(card => {
+        card.addEventListener("click", () => {
+          document.querySelectorAll(".gift-item").forEach(c => c.classList.remove("active"));
+          card.classList.add("active");
+          giftAmount = card.getAttribute("data-price") || 9;
+          document.getElementById("btnSendGift").innerText = `Send Gift (₹${giftAmount})`;
+        });
+      });
+
+      const openUPI = (amount) => {
+        window.location.href = `upi://pay?pa=merchant@upi&pn=MeherAI&am=${amount}&cu=INR&tn=MeherAccess`;
+      };
+      tap("btnSendGift", () => openUPI(giftAmount));
+      tap("btnPayUPI", () => openUPI(49));
+
+      tap("btnVoice", function() {
+        const icon = this.querySelector("i");
+        if (icon.classList.contains("fa-play")) {
+          icon.className = "fa-solid fa-pause";
+          const u = new SpeechSynthesisUtterance("Haan bolo na, main sun rahi hoon!");
+          u.onend = () => icon.className = "fa-solid fa-play";
+          window.speechSynthesis.speak(u);
+        } else {
+          window.speechSynthesis.cancel();
+          icon.className = "fa-solid fa-play";
+        }
+      });
+
+      tap("btnMic", () => alert("Microphone active! Meher is listening."));
+
+      function sendMessage() {
+        const text = input.value.trim();
+        if (!text) return;
+
+        const userMsg = document.createElement("div");
+        userMsg.className = "msg user";
+        userMsg.innerHTML = `${text.replace(/</g, "&lt;")}<div class="time">Just now</div>`;
+        chatBox.appendChild(userMsg);
+        input.value = "";
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+        setTimeout(() => {
+          const botMsg = document.createElement("div");
+          botMsg.className = "msg bot";
+          botMsg.innerHTML = `Sach mein? Aur batao na, aage kya hua? 😉<div class="time">Just now</div>`;
+          chatBox.appendChild(botMsg);
+          chatBox.scrollTop = chatBox.scrollHeight;
+        }, 600);
+      }
+
+      tap("btnSend", sendMessage);
+      input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") sendMessage();
+      });
+    });
+  </script>
+</body>
+</html>
