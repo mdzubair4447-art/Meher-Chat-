@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>Meher ✨ (@meher_in_delhi)</title>
 
-  <!-- PWA & Mobile Engine -->
   <link rel="manifest" href="/manifest.json" />
   <meta name="theme-color" content="#09090b" />
   <meta name="mobile-web-app-capable" content="yes" />
@@ -42,15 +41,13 @@
     .btn-renew-pill { background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink)); color: #fff; font-size: 11px; font-weight: 600; padding: 6px 12px; border-radius: 20px; border: none; cursor: pointer; box-shadow: 0 2px 8px rgba(121, 40, 202, 0.4); }
     .header-icon-btn { background: none; border: none; color: #fff; font-size: 17px; cursor: pointer; padding: 4px; }
 
-    /* Floating Top Banner */
+    /* Floating Top Warning Banner */
     .top-banner-warning { background: linear-gradient(90deg, #1c1124, #261226); border-bottom: 1px solid rgba(255, 0, 128, 0.3); padding: 8px 14px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
     .top-banner-warning span { color: #f472b6; font-weight: 500; }
-    .top-banner-warning a { color: #fff; font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 4px; }
+    .top-banner-warning a { color: #fff; font-weight: 600; text-decoration: none; cursor: pointer; }
 
     /* Chat Stage */
     .chat-stage { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 14px; scroll-behavior: smooth; }
-    
-    /* Timestamp marker */
     .date-marker { align-self: center; font-size: 11px; color: var(--text-muted); background: #18181b; padding: 3px 10px; border-radius: 12px; }
 
     /* Missed Call Widget */
@@ -67,8 +64,6 @@
     .vn-wave-area { flex: 1; display: flex; flex-direction: column; gap: 4px; }
     .vn-waves { height: 18px; display: flex; align-items: center; gap: 3px; }
     .vn-bar { width: 3px; background: #52525b; border-radius: 2px; }
-    .vn-bar:nth-child(even) { height: 14px; }
-    .vn-bar:nth-child(odd) { height: 8px; }
     .vn-bar.active { background: var(--primary-blue); }
     .vn-timer { font-size: 10px; color: var(--text-muted); align-self: flex-end; }
 
@@ -95,27 +90,23 @@
 
     /* Footer / Input Bar */
     .chat-footer { padding: 10px 12px; background: var(--bg-dark); border-top: 1px solid var(--border-color); display: flex; align-items: center; gap: 8px; z-index: 20; }
-    .btn-gift-rose { background: #271424; border: 1px solid #581c47; width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; cursor: pointer; flex-shrink: 0; transition: transform 0.2s; }
-    .btn-gift-rose:active { transform: scale(0.92); }
+    .btn-gift-rose { background: #271424; border: 1px solid #581c47; width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; cursor: pointer; flex-shrink: 0; }
     .input-wrapper { flex: 1; position: relative; display: flex; align-items: center; }
     .app-input { width: 100%; background: #18181b; border: 1px solid var(--border-color); border-radius: 24px; padding: 10px 42px 10px 16px; color: #fff; font-size: 13.5px; outline: none; }
-    .app-input:focus { border-color: var(--accent-purple); }
     .btn-mic-icon { position: absolute; right: 12px; color: var(--text-muted); cursor: pointer; font-size: 15px; }
     .btn-send { background: var(--primary-blue); color: #fff; border: none; border-radius: 50%; width: 38px; height: 38px; cursor: pointer; display: flex; justify-content: center; align-items: center; font-size: 14px; flex-shrink: 0; }
 
     /* 3-Dots Dropdown Menu */
-    .menu-dropdown { display: none; position: absolute; top: 60px; right: 14px; background: #18181b; border: 1px solid var(--border-color); border-radius: 14px; width: 175px; z-index: 50; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6); overflow: hidden; }
-    .menu-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; font-size: 13px; color: #e4e4e7; cursor: pointer; transition: background 0.15s; }
+    .menu-dropdown { display: none; position: absolute; top: 60px; right: 14px; background: #18181b; border: 1px solid var(--border-color); border-radius: 14px; width: 175px; z-index: 50; box-shadow: 0 10px 25px rgba(0,0,0,0.6); overflow: hidden; }
+    .menu-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; font-size: 13px; color: #e4e4e7; cursor: pointer; }
     .menu-item:active { background: #27272a; }
     .menu-item.danger { color: #f87171; border-top: 1px solid var(--border-color); }
 
-    /* Common Drawer / Bottom Sheet & Modals */
-    .modal-backdrop { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(4px); z-index: 100; justify-content: center; align-items: flex-end; }
-    .sheet-card { background: #121215; border-top: 1px solid #333; border-radius: 24px 24px 0 0; width: 100%; max-width: 460px; padding: 20px 18px; max-height: 85vh; overflow-y: auto; animation: slideUp 0.25s ease-out; }
-    @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+    /* Bottom Sheets & Modals */
+    .modal-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(4px); z-index: 100; justify-content: center; align-items: flex-end; }
+    .sheet-card { background: #121215; border-top: 1px solid #333; border-radius: 24px 24px 0 0; width: 100%; max-width: 460px; padding: 20px 18px; max-height: 85vh; overflow-y: auto; }
     .sheet-drag-handle { width: 38px; height: 4px; background: #3f3f46; border-radius: 3px; margin: 0 auto 16px; }
 
-    /* Gift Sheet Styling */
     .gift-header { text-align: center; margin-bottom: 18px; }
     .gift-header h3 { font-size: 17px; margin-bottom: 4px; }
     .gift-header p { font-size: 12px; color: var(--text-muted); }
@@ -127,10 +118,10 @@
     .gift-card .price { font-size: 11px; color: var(--text-muted); }
     .btn-send-gift { width: 100%; padding: 13px; background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink)); color: #fff; border: none; border-radius: 12px; font-weight: 600; font-size: 14px; cursor: pointer; }
 
-    /* Subscription Paywall Full Modal */
+    /* Subscription Paywall Modal */
     .paywall-modal { display: none; position: fixed; inset: 0; background: #09090b; z-index: 120; flex-direction: column; padding: 24px 20px; overflow-y: auto; justify-content: space-between; }
     .paywall-hero { text-align: center; margin-top: 10px; }
-    .paywall-avatar { width: 84px; height: 84px; border-radius: 50%; object-fit: cover; border: 3px solid var(--accent-purple); box-shadow: 0 0 25px rgba(121, 40, 202, 0.4); margin-bottom: 14px; }
+    .paywall-avatar { width: 84px; height: 84px; border-radius: 50%; object-fit: cover; border: 3px solid var(--accent-purple); margin-bottom: 14px; }
     .paywall-title { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
     .paywall-price { font-size: 30px; font-weight: 800; color: #fff; margin: 10px 0; }
     .paywall-price span { font-size: 14px; color: var(--text-muted); font-weight: 400; }
@@ -139,10 +130,10 @@
     .benefit-icon { font-size: 20px; color: var(--accent-pink); }
     .benefit-info h4 { font-size: 13px; font-weight: 600; }
     .benefit-info p { font-size: 11px; color: var(--text-muted); }
-    .btn-renew-main { width: 100%; padding: 14px; background: linear-gradient(135deg, #6366f1, #a855f7); color: #fff; border: none; border-radius: 12px; font-weight: 700; font-size: 15px; cursor: pointer; box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4); }
+    .btn-renew-main { width: 100%; padding: 14px; background: linear-gradient(135deg, #6366f1, #a855f7); color: #fff; border: none; border-radius: 12px; font-weight: 700; font-size: 15px; cursor: pointer; }
     .btn-skip { background: none; border: none; color: var(--text-muted); font-size: 12px; margin-top: 12px; cursor: pointer; text-decoration: underline; width: 100%; text-align: center; }
 
-    /* Profile / Bio Slide Page */
+    /* Profile Slide Page */
     .profile-page { display: none; position: fixed; inset: 0; background: #000; z-index: 110; flex-direction: column; overflow-y: auto; }
     .profile-nav { display: flex; align-items: center; padding: 14px 16px; border-bottom: 1px solid var(--border-color); }
     .profile-content { padding: 20px 16px; display: flex; flex-direction: column; align-items: center; }
@@ -159,7 +150,7 @@
   <div class="app-viewport">
     <!-- Top Header -->
     <div class="top-header">
-      <div class="header-user" onclick="openProfile()">
+      <div class="header-user" id="btnOpenProfileHeader">
         <div class="avatar-ring">
           <img class="avatar-img" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80" alt="Meher" />
           <div class="live-dot"></div>
@@ -170,27 +161,27 @@
         </div>
       </div>
       <div class="header-actions">
-        <button class="btn-renew-pill" onclick="openPaywall()">Renew Plan</button>
-        <button class="header-icon-btn" onclick="openTalkTime()"><i class="fa-solid fa-phone"></i></button>
-        <button class="header-icon-btn" onclick="toggleMenu()"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+        <button class="btn-renew-pill" id="btnRenewHeader">Renew Plan</button>
+        <button class="header-icon-btn" id="btnPhoneHeader"><i class="fa-solid fa-phone"></i></button>
+        <button class="header-icon-btn" id="btnMenuToggle"><i class="fa-solid fa-ellipsis-vertical"></i></button>
       </div>
     </div>
 
     <!-- 3-Dots Menu -->
     <div class="menu-dropdown" id="menuDropdown">
-      <div class="menu-item" onclick="openProfile()"><i class="fa-regular fa-user"></i> Profile</div>
-      <div class="menu-item" onclick="openTalkTime()"><i class="fa-solid fa-stopwatch"></i> Talk time</div>
-      <div class="menu-item" onclick="alert('Meher AI Version 2.4 - All systems active')"><i class="fa-solid fa-gear"></i> Settings</div>
-      <div class="menu-item danger" onclick="clearConversation()"><i class="fa-solid fa-trash-can"></i> Clear Chat</div>
+      <div class="menu-item" id="menuOptProfile"><i class="fa-regular fa-user"></i> Profile</div>
+      <div class="menu-item" id="menuOptTalkTime"><i class="fa-solid fa-stopwatch"></i> Talk time</div>
+      <div class="menu-item" id="menuOptSettings"><i class="fa-solid fa-gear"></i> Settings</div>
+      <div class="menu-item danger" id="menuOptClear"><i class="fa-solid fa-trash-can"></i> Clear Chat</div>
     </div>
 
     <!-- Floating Top Warning Banner -->
     <div class="top-banner-warning">
       <span>Your premium plan is cancelled!</span>
-      <a href="javascript:void(0)" onclick="openPaywall()">Renew Now <i class="fa-solid fa-arrow-right"></i></a>
+      <a href="javascript:void(0)" id="btnBannerRenew">Renew Now <i class="fa-solid fa-arrow-right"></i></a>
     </div>
 
-    <!-- Main Chat Messages Box -->
+    <!-- Main Chat Stage -->
     <div class="chat-stage" id="chatStage">
       <div class="date-marker">Today</div>
 
@@ -203,12 +194,12 @@
             <p>Missed call • Just now</p>
           </div>
         </div>
-        <button class="btn-call-back" onclick="openTalkTime()">Call Back Now</button>
+        <button class="btn-call-back" id="btnCallBack">Call Back Now</button>
       </div>
 
       <!-- Character Audio Voice Note -->
       <div class="voice-note-card">
-        <button class="vn-play-btn" onclick="playVoiceNote(this)"><i class="fa-solid fa-play"></i></button>
+        <button class="vn-play-btn" id="btnPlayVN"><i class="fa-solid fa-play"></i></button>
         <div class="vn-wave-area">
           <div class="vn-waves">
             <div class="vn-bar" style="height: 12px;"></div>
@@ -224,8 +215,8 @@
         </div>
       </div>
 
-      <!-- Locked Photo Preview Card -->
-      <div class="locked-media-card" onclick="openPaywall()">
+      <!-- Locked Photo Card -->
+      <div class="locked-media-card" id="btnLockedCard">
         <img class="locked-media-blur" src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=500&q=80" alt="Exclusive" />
         <div class="locked-media-overlay">
           <div class="lock-circle"><i class="fa-solid fa-lock"></i></div>
@@ -248,17 +239,17 @@
 
     <!-- Input Footer Bar -->
     <div class="chat-footer">
-      <div class="btn-gift-rose" onclick="openGiftSheet()">🌹</div>
+      <div class="btn-gift-rose" id="btnRoseGift">🌹</div>
       <div class="input-wrapper">
-        <input type="text" id="chatInput" class="app-input" placeholder="Message Meher..." onkeydown="handleInputKey(event)" />
-        <i class="fa-solid fa-microphone btn-mic-icon" onclick="triggerAudioRecord()"></i>
+        <input type="text" id="chatInput" class="app-input" placeholder="Message Meher..." />
+        <i class="fa-solid fa-microphone btn-mic-icon" id="btnMicIcon"></i>
       </div>
-      <button class="btn-send" onclick="sendUserMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+      <button class="btn-send" id="btnSend"><i class="fa-solid fa-paper-plane"></i></button>
     </div>
   </div>
 
   <!-- Gift Bottom Sheet -->
-  <div class="modal-backdrop" id="giftSheet" onclick="closeSheetOnBg(event, 'giftSheet')">
+  <div class="modal-backdrop" id="giftSheet">
     <div class="sheet-card">
       <div class="sheet-drag-handle"></div>
       <div class="gift-header">
@@ -266,34 +257,45 @@
         <p>Express your feelings with gifts Meher will love!</p>
       </div>
       <div class="gift-grid">
-        <div class="gift-card selected" onclick="selectGift(this, 'Lal Gulab', 9)">
-          <span class="emoji">🌹</span>
-          <span class="name">Lal Gulab</span>
-          <span class="price">₹9</span>
-        </div>
-        <div class="gift-card" onclick="selectGift(this, 'Dairy Milk', 19)">
-          <span class="emoji">🍫</span>
-          <span class="name">Dairy Milk</span>
-          <span class="price">₹19</span>
-        </div>
-        <div class="gift-card" onclick="selectGift(this, 'Teddy', 49)">
-          <span class="emoji">🧸</span>
-          <span class="name">Teddy</span>
-          <span class="price">₹49</span>
-        </div>
-        <div class="gift-card" onclick="selectGift(this, 'Jhumka', 29)">
-          <span class="emoji">✨</span>
-          <span class="name">Jhumka</span>
-          <span class="price">₹29</span>
-        </div>
-        <div class="gift-card" onclick="selectGift(this, 'Choodiya', 29)">
-          <span class="emoji">💫</span>
-          <span class="name">Choodiya</span>
-          <span class="price">₹29</span>
-        </div>
+        <div class="gift-card selected" data-price="9"><span class="emoji">🌹</span><span class="name">Lal Gulab</span><span class="price">₹9</span></div>
+        <div class="gift-card" data-price="19"><span class="emoji">🍫</span><span class="name">Dairy Milk</span><span class="price">₹19</span></div>
+        <div class="gift-card" data-price="49"><span class="emoji">🧸</span><span class="name">Teddy</span><span class="price">₹49</span></div>
+        <div class="gift-card" data-price="29"><span class="emoji">✨</span><span class="name">Jhumka</span><span class="price">₹29</span></div>
+        <div class="gift-card" data-price="29"><span class="emoji">💫</span><span class="name">Choodiya</span><span class="price">₹29</span></div>
       </div>
-      <button class="btn-send-gift" id="giftSubmitBtn" onclick="payForGift()">Send Gift (₹9)</button>
+      <button class="btn-send-gift" id="giftSubmitBtn">Send Gift (₹9)</button>
     </div>
   </div>
 
-  <!-- Talk Time Minutes Drawer 
+  <!-- Talk Time Drawer -->
+  <div class="modal-backdrop" id="talkTimeSheet">
+    <div class="sheet-card">
+      <div class="sheet-drag-handle"></div>
+      <div class="gift-header">
+        <h3>Talk Time Packages 📞</h3>
+        <p>Meher se direct call par baat karne ke liye minutes unlock karein</p>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:18px;">
+        <div class="benefit-item" style="cursor:pointer;" id="planQuickCall">
+          <i class="fa-solid fa-bolt benefit-icon"></i>
+          <div class="benefit-info">
+            <h4>Quick call (5 min)</h4>
+            <p>Short & sweet baatein • ₹25</p>
+          </div>
+        </div>
+        <div class="benefit-item" style="border-color:var(--accent-pink); cursor:pointer;" id="planLambiBaat">
+          <i class="fa-solid fa-heart benefit-icon"></i>
+          <div class="benefit-info">
+            <h4>Lambi baat (25 min) - Most Popular</h4>
+            <p>Late night deep chat • ₹100</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Subscription Paywall Modal -->
+  <div class="paywall-modal" id="paywallModal">
+    <div>
+      <div style="display:flex; justify-content:flex-end;">
+        <button id="btnClosePaywall" style="ba
