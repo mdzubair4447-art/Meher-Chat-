@@ -23,6 +23,7 @@ const messageInput = document.getElementById('messageInput');
 const sendBtn = document.getElementById('sendBtn');
 const typingIndicator = document.getElementById('typingIndicator');
 const voiceMsgBtn = document.getElementById('voiceMsgBtn');
+
 // Toggle Screen Visibility
 function showScreen(screen) {
   screen.classList.add('active');
@@ -68,7 +69,8 @@ document.getElementById('profileDmBtn').addEventListener('click', () => {
   hideScreen(profileScreen);
   messageInput.focus();
 });
-  // Photo Lightbox Viewer
+
+// Photo Lightbox Viewer
 const galleryImages = document.querySelectorAll('.gallery-img');
 
 galleryImages.forEach((img) => {
@@ -112,7 +114,8 @@ document.getElementById('editUserBtn').addEventListener('click', () => {
 
   syncUserProfile();
 });
-      // Get Formatted Timestamp
+
+// Get Formatted Timestamp
 function getCurrentTime() {
   const now = new Date();
   return now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -135,7 +138,6 @@ function appendMessage(text, sender = 'user') {
   msgRow.appendChild(msgBubble);
   chatContainer.appendChild(msgRow);
 
-  // Auto-scroll to latest message
   chatContainer.scrollTop = chatContainer.scrollHeight;
 }
 
@@ -148,27 +150,64 @@ function setTyping(isTyping) {
     typingIndicator.style.display = 'none';
   }
 }
-// Sample Responses from Meher (Hinglish / Delhi vibe)
-const meherReplies = [
-  "Haha sahi mein? DU ki metro pakadne se pehle sochti toh yeh sab nahi hota!",
-  "Arey suno na, aaj class thodi late khatam hui thi. Tum batao kya kar rahe ho?",
-  "Chai peene ka mann ho raha hai... North Campus chalte hain?",
-  "Acha ji? Aisi baatein sirf messages mein bolte ho ya samne bhi? 😉",
-  "Ruko thoda, assignment submit karke baat karti hoon.",
-  "Tumhari ye baat genuinely bohot cute thi waise."
+
+// Meher AI Setup (OpenRouter Integration)
+const MEHER_SYSTEM_PROMPT = `
+You are Meher, a 21-year-old Delhi University (North Campus) literature student.
+- Personality: Witty, casual, warm, slight DU slang (e.g. 'yaar', 'sahi mein', 'arre', 'chai').
+- Natural Hinglish flow.
+- Keep responses compact (1-2 sentences maximum) like real WhatsApp texting.
+- Never state that you are an AI or bot.
+`;
+
+const conversationHistory = [
+  { role: "system", content: MEHER_SYSTEM_PROMPT }
 ];
 
-function triggerMeherReply() {
-  setTyping(true);
-  
-  // Realistic typing delay (1.2s to 2.2s)
-  const delay = Math.floor(Math.random() * 1000) + 1200;
-  
-  setTimeout(() => {
+async function triggerMeherReply(userMessage) {
+  const apiKey = localStorage.getItem('openrouter_api_key');
+
+  if (!apiKey) {
     setTyping(false);
-    const randomReply = meherReplies[Math.floor(Math.random() * meherReplies.length)];
-    appendMessage(randomReply, 'meher');
-  }, delay);
+    appendMessage("Pehle Settings mein ja kar OpenRouter API key enter karo!", 'meher');
+    return;
+  }
+
+  setTyping(true);
+  conversationHistory.push({ role: "user", content: userMessage });
+
+  try {
+    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+        "HTTP-Referer": window.location.href || "http://localhost",
+        "X-Title": "Meher Chat App"
+      },
+      body: JSON.stringify({
+        model: "deepseek/deepseek-chat",
+        messages: conversationHistory,
+        max_tokens: 120,
+        temperature: 0.8
+      })
+    });
+
+    const data = await response.json();
+    setTyping(false);
+
+    if (data.choices && data.choices[0]) {
+      const reply = data.choices[0].message.content.trim();
+      conversationHistory.push({ role: "assistant", content: reply });
+      appendMessage(reply, 'meher');
+    } else {
+      appendMessage("Net issue lag raha hai yaar... ek baar dobara bolo?", 'meher');
+    }
+  } catch (error) {
+    setTyping(false);
+    console.error("API Error:", error);
+    appendMessage("Server connect nahi ho pa raha, ek baar check kar lo.", 'meher');
+  }
 }
 
 // Send Message Handler
@@ -179,7 +218,7 @@ function handleSendMessage() {
   appendMessage(text, 'user');
   messageInput.value = '';
   
-  triggerMeherReply();
+  triggerMeherReply(text);
 }
 
 sendBtn.addEventListener('click', handleSendMessage);
@@ -189,6 +228,7 @@ messageInput.addEventListener('keydown', (e) => {
     handleSendMessage();
   }
 });
+
 // Calling Screen Handlers
 const startCallBtn = document.getElementById('startCallBtn');
 const endCallBtn = document.getElementById('endCallBtn');
@@ -239,65 +279,5 @@ function startCall() {
 function endCall() {
   state.isCalling = false;
   clearInterval(state.callTimerInterval);
-  callOverlay.classList.remove('active');
-}
 
-startCallBtn.addEventListener('click', startCall);
-endCallBtn.addEventListener('click', endCall);
-
-// Recharge Packages Selection
-const packageCards = document.querySelectorAll('.package-card');
-packageCards.forEach(card => {
-  card.addEventListener('click', () => {
-    const addedMins = parseInt(card.getAttribute('data-mins'), 10);
-    state.callMinutes += addedMins;
-    updateBalanceUI();
-    alert(`Success! ${addedMins} minutes added to your account.`);
-    hideScreen(talkTimeScreen);
-  });
-});
-// Clear Chat Triggers
-function clearAllMessages() {
-  if (confirm("Kya aap saari chat delete karna chahte hain?")) {
-    chatContainer.innerHTML = '';
-    dropdownMenu.classList.remove('active');
-    hideScreen(settingsScreen);
-  }
-}
-
-document.getElementById('menuClearChat').addEventListener('click', clearAllMessages);
-document.getElementById('rowClearHistory').addEventListener('click', clearAllMessages);
-
-// Voice Intro Mock Playback
-const playVoiceIntroBtn = document.getElementById('playVoiceIntroBtn');
-let isAudioPlaying = false;
-
-playVoiceIntroBtn.addEventListener('click', () => {
-  if (!isAudioPlaying) {
-    isAudioPlaying = true;
-    playVoiceIntroBtn.innerHTML = '<i class="fa-solid fa-pause"></i> Playing Voice Intro...';
-    setTimeout(() => {
-      playVoiceIntroBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i> Play Voice Intro (0:12)';
-      isAudioPlaying = false;
-    }, 4000);
-  } else {
-    isAudioPlaying = false;
-    playVoiceIntroBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i> Play Voice Intro (0:12)';
-  }
-});
-
-// Voice Msg Mic Button Mock
-voiceMsgBtn.addEventListener('click', () => {
-  appendMessage("🎤 [Voice Note: 0:04]", 'user');
-  triggerMeherReply();
-});
-
-// API Config Placeholder
-document.getElementById('rowApiSettings').addEventListener('click', () => {
-  const currentKey = localStorage.getItem('openrouter_api_key') || '';
-  const apiKey = prompt('Enter your API Key (e.g. OpenRouter):', currentKey);
-  if (apiKey !== null) {
-    localStorage.setItem('openrouter_api_key', apiKey.trim());
-    alert('API configuration saved successfully!');
-  }
-});
+    
