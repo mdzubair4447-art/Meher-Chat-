@@ -69,7 +69,6 @@ document.getElementById('profileDmBtn').addEventListener('click', () => {
   hideScreen(profileScreen);
   messageInput.focus();
 });
-
 // Photo Lightbox Viewer
 const galleryImages = document.querySelectorAll('.gallery-img');
 
@@ -150,7 +149,6 @@ function setTyping(isTyping) {
     typingIndicator.style.display = 'none';
   }
 }
-
 // Meher AI Setup (OpenRouter Integration)
 const MEHER_SYSTEM_PROMPT = `
 You are Meher, a 21-year-old Delhi University (North Campus) literature student.
@@ -228,7 +226,6 @@ messageInput.addEventListener('keydown', (e) => {
     handleSendMessage();
   }
 });
-
 // Calling Screen Handlers
 const startCallBtn = document.getElementById('startCallBtn');
 const endCallBtn = document.getElementById('endCallBtn');
@@ -279,5 +276,68 @@ function startCall() {
 function endCall() {
   state.isCalling = false;
   clearInterval(state.callTimerInterval);
+  callOverlay.classList.remove('active');
+}
 
-    
+startCallBtn.addEventListener('click', startCall);
+endCallBtn.addEventListener('click', endCall);
+
+// Recharge Packages Selection
+const packageCards = document.querySelectorAll('.package-card');
+packageCards.forEach(card => {
+  card.addEventListener('click', () => {
+    const addedMins = parseInt(card.getAttribute('data-mins'), 10);
+    state.callMinutes += addedMins;
+    updateBalanceUI();
+    alert(`Success! ${addedMins} minutes added to your account.`);
+    hideScreen(talkTimeScreen);
+  });
+});
+
+// Clear Chat Triggers
+function clearAllMessages() {
+  if (confirm("Kya aap saari chat delete karna chahte hain?")) {
+    chatContainer.innerHTML = '';
+    conversationHistory.length = 1; // Reset memory to system prompt only
+    dropdownMenu.classList.remove('active');
+    hideScreen(settingsScreen);
+  }
+}
+
+document.getElementById('menuClearChat').addEventListener('click', clearAllMessages);
+document.getElementById('rowClearHistory').addEventListener('click', clearAllMessages);
+
+// Voice Intro Mock Playback
+const playVoiceIntroBtn = document.getElementById('playVoiceIntroBtn');
+let isAudioPlaying = false;
+
+playVoiceIntroBtn.addEventListener('click', () => {
+  if (!isAudioPlaying) {
+    isAudioPlaying = true;
+    playVoiceIntroBtn.innerHTML = '<i class="fa-solid fa-pause"></i> Playing Voice Intro...';
+    setTimeout(() => {
+      playVoiceIntroBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i> Play Voice Intro (0:12)';
+      isAudioPlaying = false;
+    }, 4000);
+  } else {
+    isAudioPlaying = false;
+    playVoiceIntroBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i> Play Voice Intro (0:12)';
+  }
+});
+
+// Voice Msg Mic Button Mock
+voiceMsgBtn.addEventListener('click', () => {
+  appendMessage("🎤 [Voice Note: 0:04]", 'user');
+  triggerMeherReply("sent a voice note");
+});
+
+// API Config Settings Handler
+document.getElementById('rowApiSettings').addEventListener('click', () => {
+  const currentKey = localStorage.getItem('openrouter_api_key') || '';
+  const apiKey = prompt('Enter your OpenRouter API Key:', currentKey);
+  if (apiKey !== null) {
+    localStorage.setItem('openrouter_api_key', apiKey.trim());
+    alert('API configuration saved successfully!');
+  }
+});
+                          
