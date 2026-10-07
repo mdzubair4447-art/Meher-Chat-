@@ -2,474 +2,227 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>Meher ✨ (@meher_in_delhi)</title>
-  <link rel="manifest" href="/manifest.json" />
-  <meta name="theme-color" content="#09090b" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Meher - Chat</title>
+  <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <style>
-    :root {
-      --bg: #09090b; --card: #141417; --bot: #1c1c21;
-      --purple: #7928ca; --pink: #ff0080; --blue: #3897f0;
-      --border: #27272a; --text-muted: #a1a1aa;
-    }
-    * { 
-      box-sizing: border-box; margin: 0; padding: 0; 
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
-      -webkit-tap-highlight-color: transparent; 
-      user-select: none;
-    }
-    body { background: #000; color: #fff; display: flex; justify-content: center; height: 100vh; overflow: hidden; }
-    .viewport { width: 100%; max-width: 460px; height: 100vh; display: flex; flex-direction: column; background: var(--bg); position: relative; }
-    
-    /* Header */
-    .header { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; background: rgba(9,9,11,0.95); border-bottom: 1px solid var(--border); z-index: 10; }
-    .user-info { display: flex; align-items: center; gap: 10px; cursor: pointer; }
-    .avatar-box { position: relative; width: 42px; height: 42px; }
-    .avatar-box img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 2px solid var(--purple); }
-    .dot-live { width: 10px; height: 10px; background: #10b981; border: 2px solid var(--bg); border-radius: 50%; position: absolute; bottom: 0; right: 0; }
-    .titles h3 { font-size: 15px; font-weight: 600; display: flex; align-items: center; gap: 4px; }
-    .titles p { font-size: 11px; color: #10b981; display: flex; align-items: center; gap: 4px; font-weight: 500; }
-    .header-btns { display: flex; align-items: center; gap: 8px; }
-    .pill-btn { background: linear-gradient(135deg, var(--purple), var(--pink)); color: #fff; font-size: 11px; font-weight: 600; padding: 6px 12px; border-radius: 20px; border: none; cursor: pointer; }
-    .icon-btn { background: none; border: none; color: #fff; font-size: 16px; padding: 6px; cursor: pointer; }
-        /* 3-Dots Menu */
-    .menu-popup { display: none; position: absolute; top: 58px; right: 14px; background: #18181b; border: 1px solid var(--border); border-radius: 12px; width: 170px; z-index: 50; box-shadow: 0 10px 25px rgba(0,0,0,0.7); }
-    .menu-row { display: flex; align-items: center; gap: 10px; padding: 12px 14px; font-size: 13px; cursor: pointer; color: #eee; }
-    .menu-row:active { background: #27272a; }
-    .menu-row.danger { color: #f87171; border-top: 1px solid var(--border); }
-
-    .top-bar { background: #1a0f1d; border-bottom: 1px solid rgba(255,0,128,0.3); padding: 8px 14px; display: flex; justify-content: space-between; font-size: 12px; }
-    .top-bar span { color: #f472b6; }
-    .top-bar a { color: #fff; font-weight: 600; text-decoration: none; cursor: pointer; }
-
-    /* Chat Area */
-    .chat-box { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 12px; }
-    .tag-today { align-self: center; font-size: 11px; color: var(--text-muted); background: #18181b; padding: 3px 10px; border-radius: 12px; }
-    
-    .missed-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; width: 85%; }
-    .missed-card i { color: #ef4444; font-size: 18px; margin-right: 10px; }
-    .missed-card button { background: var(--bot); border: 1px solid #3f3f46; color: #fff; font-size: 11px; padding: 5px 10px; border-radius: 6px; cursor: pointer; }
-
-    /* Voice Note Bubble */
-    .vn-card { background: var(--bot); border: 1px solid var(--border); border-radius: 16px 16px 16px 4px; padding: 10px 14px; width: 80%; display: flex; align-items: center; gap: 12px; }
-    .vn-play { width: 36px; height: 36px; border-radius: 50%; background: var(--blue); border: none; color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; }
-    .vn-bars { display: flex; align-items: center; gap: 3px; height: 18px; flex: 1; }
-    .v-bar { width: 3px; background: #52525b; border-radius: 2px; height: 10px; transition: height 0.2s ease; }
-    .v-bar.active { background: var(--blue); animation: wave 0.8s infinite ease-in-out alternate; }
-    @keyframes wave { 0% { height: 4px; } 100% { height: 18px; } }
-        .locked-card { width: 75%; background: #000; border: 1px solid var(--border); border-radius: 14px; overflow: hidden; position: relative; cursor: pointer; height: 180px; }
-    .locked-card img { width: 100%; height: 100%; object-fit: cover; filter: blur(20px) brightness(0.6); }
-    .locked-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; }
-
-    .msg { max-width: 80%; padding: 10px 14px; border-radius: 16px; font-size: 13.5px; line-height: 1.4; word-break: break-word; }
-    .msg.bot { align-self: flex-start; background: var(--bot); border-bottom-left-radius: 4px; border: 1px solid var(--border); }
-    .msg.user { align-self: flex-end; background: var(--blue); border-bottom-right-radius: 4px; }
-    .msg .time { font-size: 9px; opacity: 0.6; text-align: right; margin-top: 4px; }
-
-    /* Footer / Input */
-    .footer { padding: 10px 12px; background: var(--bg); border-top: 1px solid var(--border); display: flex; align-items: center; gap: 8px; }
-    .gift-btn { background: #271424; border: 1px solid #581c47; width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; cursor: pointer; }
-    .input-box { flex: 1; position: relative; }
-    .input-box input { width: 100%; background: #18181b; border: 1px solid var(--border); border-radius: 20px; padding: 10px 38px 10px 14px; color: #fff; font-size: 13.5px; outline: none; }
-    .input-box i { position: absolute; right: 12px; top: 11px; color: var(--text-muted); cursor: pointer; font-size: 16px; }
-    .input-box i.recording { color: #ef4444; animation: pulse 1s infinite; }
-    @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
-    .send-btn { background: var(--blue); color: #fff; border: none; width: 38px; height: 38px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-
-    /* Modals & Sheets */
-    .sheet-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 100; justify-content: center; align-items: flex-end; }
-    .sheet { background: #121215; border-top: 1px solid #333; border-radius: 20px 20px 0 0; width: 100%; max-width: 460px; padding: 20px 16px; }
-    .gift-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 14px 0; }
-    .gift-item { background: #18181b; border: 1px solid var(--border); border-radius: 12px; padding: 10px 4px; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; }
-    .gift-item.active { border-color: var(--pink); background: #251222; }
-    .btn-action { width: 100%; padding: 12px; background: linear-gradient(135deg, var(--purple), var(--pink)); color: #fff; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; }
-
-    .full-modal { display: none; position: fixed; inset: 0; background: #09090b; z-index: 110; flex-direction: column; overflow-y: auto; }
-    
-    /* Bio & Gallery Grid */
-    .gallery-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 16px; }
-    .gallery-grid img { width: 100%; height: 115px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border); }
-    .voice-intro-box { background: #18181b; border: 1px solid var(--border); border-radius: 24px; padding: 10px 16px; display: flex; justify-content: space-between; align-items: center; margin: 14px 0; cursor: pointer; }
-    .bio-text-card { background: #141417; border: 1px solid var(--border); border-radius: 12px; padding: 14px; text-align: left; font-size: 13px; line-height: 1.5; color: #e4e4e7; margin: 12px 0; }
-  </style>
 </head>
 <body>
-  <div class="viewport">
-    <div class="header">
-      <div class="user-info" id="btnProfile">
-        <div class="avatar-box">
-          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80" alt="Meher" />
-          <div class="dot-live"></div>
+  <div class="app-container">
+        <!-- TOP HEADER -->
+    <header class="top-header">
+      <div class="header-profile-clickable" id="openProfileHeader">
+        <div class="avatar-wrapper">
+          <img src="meher1.jpg" alt="Meher" class="header-avatar" onerror="this.src='https://placehold.co/100x100/ff4d67/ffffff?text=M'" />
+          <span class="online-dot"></span>
         </div>
-        <div class="titles">
-          <h3>Meher <i class="fa-solid fa-circle-check" style="color:var(--blue); font-size:12px;"></i></h3>
-          <p><i class="fa-solid fa-circle" style="font-size:7px;"></i> Online</p>
-        </div>
-      </div>
-      <div class="header-btns">
-        <button class="pill-btn" id="btnRenew">Renew Plan</button>
-        <button class="icon-btn" id="btnCall"><i class="fa-solid fa-phone"></i></button>
-        <button class="icon-btn" id="btnMenu"><i class="fa-solid fa-ellipsis-vertical"></i></button>
-      </div>
-    </div>
-
-    <!-- 3-Dots Menu -->
-    <div class="menu-popup" id="menuPopup">
-      <div class="menu-row" id="menuOptProfile"><i class="fa-regular fa-user"></i> View Profile</div>
-      <div class="menu-row" id="menuOptSettings"><i class="fa-solid fa-gear"></i> Settings</div>
-      <div class="menu-row danger" id="menuOptClear"><i class="fa-solid fa-trash-can"></i> Clear Chat</div>
-    </div>
-
-    <div class="top-bar">
-      <span>Your premium plan is cancelled!</span>
-      <a id="btnBanner">Renew Now →</a>
-    </div>
-
-    <div class="chat-box" id="chatBox">
-      <div class="tag-today">Today</div>
-
-      <div class="missed-card">
-        <div style="display:flex; align-items:center;">
-          <i class="fa-solid fa-phone-slash"></i>
-          <div><h4 style="font-size:13px;">Meher tried calling you</h4><p style="font-size:10px; color:var(--text-muted);">Missed call • Just now</p></div>
-        </div>
-        <button id="btnCallBack">Call Back</button>
-      </div>
-
-      <div class="vn-card">
-        <button class="vn-play" id="btnVoice"><i class="fa-solid fa-play"></i></button>
-        <div style="flex:1;">
-          <div class="vn-bars">
-            <div class="v-bar"></div>
-            <div class="v-bar"></div>
-            <div class="v-bar"></div>
-            <div class="v-bar"></div>
-            <div class="v-bar"></div>
-            <div class="v-bar"></div>
+        <div class="header-info">
+          <div class="header-name-row">
+            <span class="header-name">Meher</span>
+            <i class="fa-solid fa-circle-check verified-badge"></i>
           </div>
-          <span style="font-size:10px; color:var(--text-muted);" id="vnDuration">0:15</span>
+          <span class="header-status">Online</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="btn-renew" id="openRenewBtn">Renew</button>
+        <button class="icon-btn" id="startCallBtn" aria-label="Audio Call"><i class="fa-solid fa-phone"></i></button>
+        <button class="icon-btn" id="headerMenuBtn" aria-label="Menu"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+      </div>
+    </header>
+        <!-- DROPDOWN MENU -->
+    <div class="menu-dropdown" id="dropdownMenu">
+      <button class="menu-item" id="menuViewProfile">
+        <i class="fa-regular fa-user"></i> View Profile
+      </button>
+      <button class="menu-item" id="menuSettings">
+        <i class="fa-solid fa-gear"></i> Settings
+      </button>
+      <button class="menu-item" id="menuClearChat">
+        <i class="fa-regular fa-trash-can"></i> Clear Chat
+      </button>
+    </div>
+        <!-- CHAT MESSAGES AREA -->
+    <main class="chat-container" id="chatContainer">
+      <div class="msg-row meher">
+        <div class="msg-bubble">
+          Hey! Kaisi ho? I mean DU se abhi aayi thi, batao kya scene hai?
+          <span class="msg-time">Just now</span>
+        </div>
+      </div>
+    </main>
+
+    <!-- TYPING INDICATOR -->
+    <div class="typing-indicator" id="typingIndicator">
+      <span class="typing-dot"></span>
+      <span class="typing-dot"></span>
+      <span class="typing-dot"></span>
+    </div>
+        <!-- BOTTOM INPUT BAR -->
+    <footer class="bottom-input-bar">
+      <button class="input-icon-btn" id="voiceMsgBtn" aria-label="Mic">
+        <i class="fa-solid fa-microphone"></i>
+      </button>
+      <input 
+        type="text" 
+        class="chat-input" 
+        id="messageInput" 
+        placeholder="Type a message..." 
+        autocomplete="off" 
+      />
+      <button class="btn-send" id="sendBtn" aria-label="Send">
+        <i class="fa-solid fa-paper-plane"></i>
+      </button>
+  </footer>
+      <!-- MEHER PROFILE SCREEN -->
+    <div class="screen-view" id="profileScreen">
+      <div class="screen-header">
+        <button class="back-btn" id="closeProfileBtn" aria-label="Back">
+          <i class="fa-solid fa-arrow-left"></i>
+        </button>
+        <span class="screen-title">Meher's Profile</span>
+      </div>
+
+      <div class="profile-content">
+        <div class="profile-hero">
+          <img src="meher1.jpg" alt="Meher" class="profile-main-avatar" onerror="this.src='https://placehold.co/120x120/ff4d67/ffffff?text=Meher'" />
+          <div class="profile-meta-title">
+            Meher <i class="fa-solid fa-circle-check verified-badge"></i>
+          </div>
+          <span class="profile-subtext">21 • North Campus, DU • Active Now</span>
+        </div>
+
+        <div class="profile-bio-box">
+          Delhi University literature student. Chai lover, sarcastic on bad days, loyal 24/7. North Delhi vibes only. Text me before my classes start!
+        </div>
+
+        <button class="btn-voice-intro" id="playVoiceIntroBtn">
+          <i class="fa-solid fa-volume-high"></i> Play Voice Intro (0:12)
+        </button>
+                <div class="gallery-section-title">Photos (9)</div>
+        <div class="photo-grid-3x3">
+          <div class="photo-grid-item"><img src="meher1.jpg" alt="Meher 1" class="gallery-img" onerror="this.src='https://placehold.co/300x300/1e2230/ffffff?text=1'" /></div>
+          <div class="photo-grid-item"><img src="meher2.jpg" alt="Meher 2" class="gallery-img" onerror="this.src='https://placehold.co/300x300/1e2230/ffffff?text=2'" /></div>
+          <div class="photo-grid-item"><img src="meher3.jpg" alt="Meher 3" class="gallery-img" onerror="this.src='https://placehold.co/300x300/1e2230/ffffff?text=3'" /></div>
+          <div class="photo-grid-item"><img src="meher4.jpg" alt="Meher 4" class="gallery-img" onerror="this.src='https://placehold.co/300x300/1e2230/ffffff?text=4'" /></div>
+          <div class="photo-grid-item"><img src="meher5.jpg" alt="Meher 5" class="gallery-img" onerror="this.src='https://placehold.co/300x300/1e2230/ffffff?text=5'" /></div>
+          <div class="photo-grid-item"><img src="meher6.jpg" alt="Meher 6" class="gallery-img" onerror="this.src='https://placehold.co/300x300/1e2230/ffffff?text=6'" /></div>
+          <div class="photo-grid-item"><img src="meher7.jpg" alt="Meher 7" class="gallery-img" onerror="this.src='https://placehold.co/300x300/1e2230/ffffff?text=7'" /></div>
+          <div class="photo-grid-item"><img src="meher8.jpg" alt="Meher 8" class="gallery-img" onerror="this.src='https://placehold.co/300x300/1e2230/ffffff?text=8'" /></div>
+          <div class="photo-grid-item"><img src="meher9.jpg" alt="Meher 9" class="gallery-img" onerror="this.src='https://placehold.co/300x300/1e2230/ffffff?text=9'" /></div>
         </div>
       </div>
 
-      <div class="locked-card" id="btnLocked">
-        <img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=500&q=80" />
-        <div class="locked-center"><i class="fa-solid fa-lock" style="font-size:20px;"></i><span style="font-size:13px; font-weight:600;">Tap to reveal</span></div>
+      <button class="floating-dm-btn" id="profileDmBtn">
+        <i class="fa-regular fa-comment-dots"></i> Message Meher
+      </button>
+    </div>
+        <!-- FULLSCREEN PHOTO LIGHTBOX -->
+    <div class="lightbox-modal" id="lightboxModal">
+      <img src="" alt="Enlarged preview" class="lightbox-img" id="lightboxImg" />
+    </div>
+        <!-- SETTINGS SCREEN -->
+    <div class="screen-view" id="settingsScreen">
+      <div class="screen-header">
+        <button class="back-btn" id="closeSettingsBtn" aria-label="Back">
+          <i class="fa-solid fa-arrow-left"></i>
+        </button>
+        <span class="screen-title">Settings</span>
       </div>
 
-      <div class="msg bot">
-        Chalo, finally hum baat kar rahe hain! Main Meher... Delhi se hoon aur thodi dramebaaz bhi 😉 Tum batao, kya chal raha hai?
-        <div class="time">Just now</div>
+      <div class="settings-content">
+        <div class="user-profile-card">
+          <div class="user-card-info">
+            <div class="user-avatar-circle" id="userInitial">U</div>
+            <div>
+              <div class="user-name-text" id="userNameDisplay">User</div>
+              <div class="user-handle-text" id="userBioDisplay">Tap edit to set name</div>
+            </div>
+          </div>
+          <button class="btn-edit-user" id="editUserBtn" aria-label="Edit Profile">
+            <i class="fa-solid fa-pen-to-square"></i>
+          </button>
+        </div>
+
+        <div class="settings-group">
+          <div class="settings-row" id="rowApiSettings">
+            <span>API & Model Config</span>
+            <i class="fa-solid fa-chevron-right"></i>
+          </div>
+          <div class="settings-row" id="rowTalkTime">
+            <span>My Balance & Packages</span>
+            <i class="fa-solid fa-chevron-right"></i>
+          </div>
+        </div>
+
+        <div class="settings-group">
+          <div class="settings-row btn-danger-row" id="rowClearHistory">
+            <span>Reset Entire Chat</span>
+            <i class="fa-solid fa-trash-can"></i>
+          </div>
+        </div>
       </div>
     </div>
-        <div class="footer">
-      <div class="gift-btn" id="btnRose">🌹</div>
-      <div class="input-box">
-        <input type="text" id="userInput" placeholder="Message Meher..." />
-        <i class="fa-solid fa-microphone" id="btnMic"></i>
-      </div>
-      <button class="send-btn" id="btnSend"><i class="fa-solid fa-paper-plane"></i></button>
-    </div>
-  </div>
-
-  <!-- Gift Sheet -->
-  <div class="sheet-bg" id="giftSheet">
-    <div class="sheet">
-      <h3 style="text-align:center; font-size:16px;">Bhejo ek Pyaara Gift 🎁</h3>
-      <div class="gift-grid">
-        <div class="gift-item active" data-price="9"><span style="font-size:24px;">🌹</span><span style="font-size:11px;">Lal Gulab</span><span style="font-size:10px; color:var(--text-muted);">₹9</span></div>
-        <div class="gift-item" data-price="19"><span style="font-size:24px;">🍫</span><span style="font-size:11px;">Dairy Milk</span><span style="font-size:10px; color:var(--text-muted);">₹19</span></div>
-        <div class="gift-item" data-price="49"><span style="font-size:24px;">🧸</span><span style="font-size:11px;">Teddy</span><span style="font-size:10px; color:var(--text-muted);">₹49</span></div>
-      </div>
-      <button class="btn-action" id="btnSendGift">Send Gift (₹9)</button>
-    </div>
-  </div>
-
-  <!-- Paywall Modal -->
-  <div class="full-modal" id="paywallModal" style="padding:20px; justify-content:space-between;">
-    <div style="text-align:right;"><button id="btnClosePay" style="background:none; border:none; color:#aaa; font-size:22px; cursor:pointer;">✕</button></div>
-    <div style="text-align:center;">
-      <h2 style="font-size:20px; margin-bottom:8px;">Renew VIP Access</h2>
-      <p style="color:var(--text-muted); font-size:13px;">Unlimited Chats & Private Calls with Meher</p>
-      <h1 style="font-size:32px; margin:16px 0;">₹49 <span style="font-size:14px; color:var(--text-muted);">/ Day Pass</span></h1>
-    </div>
-    <div>
-      <button class="btn-action" id="btnPayUPI">Pay via UPI & Unlock</button>
-      <button id="btnSkipPay" style="background:none; border:none; color:var(--text-muted); font-size:12px; width:100%; margin-top:12px; cursor:pointer;">Skip for now</button>
-    </div>
-  </div>
-    <!-- Meher Profile & Bio Page -->
-  <div class="full-modal" id="profileModal" style="padding:16px;">
-    <div style="display:flex; align-items:center; padding-bottom:12px; border-bottom:1px solid var(--border);">
-      <button id="btnCloseProf" style="background:none; border:none; color:#fff; font-size:18px; cursor:pointer;"><i class="fa-solid fa-arrow-left"></i></button>
-      <span style="margin-left:14px; font-weight:600;">Meher's Profile</span>
-    </div>
-    <div style="text-align:center; padding:18px 0;">
-      <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80" style="width:88px; height:88px; border-radius:50%; border:2px solid var(--purple); object-fit:cover;" />
-      <h3 style="margin-top:10px; font-size:17px;">Meher <i class="fa-solid fa-circle-check" style="color:var(--blue); font-size:14px;"></i></h3>
-      <p style="font-size:12px; color:#10b981; margin-top:2px;"><i class="fa-solid fa-circle" style="font-size:7px;"></i> Active Now</p>
-
-      <div class="voice-intro-box" id="btnVoiceIntro">
-        <span style="font-size:13px; font-weight:600;"><i class="fa-solid fa-volume-high" style="color:var(--pink);"></i> Listen Voice Intro</span>
-        <i class="fa-solid fa-play" style="font-size:12px;"></i>
+        <!-- TALK TIME & RENEW SCREEN -->
+    <div class="screen-view" id="talkTimeScreen">
+      <div class="screen-header">
+        <button class="back-btn" id="closeTalkTimeBtn" aria-label="Back">
+          <i class="fa-solid fa-arrow-left"></i>
+        </button>
+        <span class="screen-title">Recharge & Minutes</span>
       </div>
 
-      <!-- 4-5 Line Detailed Bio -->
-      <div class="bio-text-card">
-        21 • Dilli ki thodi dramebaaz aur bohot zyada moody ladki ☕<br>
-        North Campus ki adrak wali chai, Majnu Ka Tila ke momos aur late-night random deep baatein meri favorite hain.<br>
-        Dil se bohot soft hu par bina matlab ka attitude mujhe bilkul pasand nahi aata.<br>
-        Agar tum sachme sunne aur samajhne wale insaan ho, toh hum bohot ache dost ban sakte hain 😉✨
-      </div>
+      <div class="talktime-content">
+        <div class="balance-card">
+          <div class="balance-label">Available Calling Minutes</div>
+          <div class="balance-amount" id="balanceMinsDisplay">15 Mins</div>
+        </div>
 
-      <!-- 9-Photo Consistent Face Gallery Grid -->
-      <div class="gallery-grid">
-        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80" alt="Meher 1" />
-        <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=300&q=80" alt="Meher 2" />
-        <img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=300&q=80" alt="Meher 3" />
-        <img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=300&q=80" alt="Meher 4" />
-        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=300&q=80" alt="Meher 5" />
-        <img src="https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=300&q=80" alt="Meher 6" />
-        <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=300&q=80" alt="Meher 7" />
-        <img src="https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?auto=format&fit=crop&w=300&q=80" alt="Meher 8" />
-        <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=300&q=80" alt="Meher 9" />
+        <div class="package-list">
+          <div class="package-card" data-mins="30">
+            <div>
+              <div class="package-mins">30 Minutes Pack</div>
+              <small style="color: var(--text-muted);">Validity: 7 Days</small>
+            </div>
+            <div class="package-price">₹99</div>
+          </div>
+
+          <div class="package-card popular" data-mins="75">
+            <div>
+              <div class="package-mins">75 Minutes Pack 🔥</div>
+              <small style="color: var(--text-muted);">Validity: 30 Days</small>
+            </div>
+            <div class="package-price">₹199</div>
+          </div>
+
+          <div class="package-card" data-mins="200">
+            <div>
+              <div class="package-mins">Unlimited / 200 Mins</div>
+              <small style="color: var(--text-muted);">Priority Voice + Text</small>
+            </div>
+            <div class="package-price">₹399</div>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-
-  <!-- Settings Page -->
-  <div class="full-modal" id="settingsModal" style="padding:16px;">
-    <div style="display:flex; align-items:center; padding-bottom:12px; border-bottom:1px solid var(--border);">
-      <button id="btnCloseSettings" style="background:none; border:none; color:#fff; font-size:18px; cursor:pointer;"><i class="fa-solid fa-arrow-left"></i></button>
-      <span style="margin-left:14px; font-weight:600;">Settings</span>
-    </div>
-    <div style="padding:20px 0; display:flex; flex-direction:column; gap:16px;">
-      <div style="background:var(--card); padding:14px; border-radius:12px; border:1px solid var(--border);">
-        <h4 style="font-size:14px;">Language & Voice</h4>
-        <p style="font-size:12px; color:var(--text-muted);">Hinglish (Delhi Accent - Natural Voice)</p>
+        <!-- CALLING OVERLAY SCREEN -->
+    <div class="call-overlay" id="callOverlay">
+      <div class="call-user-details">
+        <img src="meher1.jpg" alt="Meher" class="call-avatar-pulse" onerror="this.src='https://placehold.co/120x120/ff4d67/ffffff?text=Meher'" />
+        <div class="call-name">Meher</div>
+        <div class="call-status-timer" id="callStatusTimer">Calling...</div>
       </div>
-      <div style="background:var(--card); padding:14px; border-radius:12px; border:1px solid var(--border);">
-        <h4 style="font-size:14px;">Account Status</h4>
-        <p style="font-size:12px; color:var(--pink);">VIP Plan Inactive</p>
+
+      <div class="call-actions-row">
+        <button class="btn-end-call" id="endCallBtn" aria-label="End Call">
+          <i class="fa-solid fa-phone-slash"></i>
+        </button>
       </div>
-      <button class="btn-action" id="btnSettingsUpgrade">Upgrade to VIP</button>
     </div>
-  </div>
-    <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      let giftAmount = 9;
-      let chatHistory = [
-        { role: "assistant", content: "Chalo, finally hum baat kar rahe hain! Main Meher... Delhi se hoon aur thodi dramebaaz bhi 😉 Tum batao, kya chal raha hai?" }
-      ];
 
-      const payModal = document.getElementById("paywallModal");
-      const profModal = document.getElementById("profileModal");
-      const setModal = document.getElementById("settingsModal");
-      const giftSheet = document.getElementById("giftSheet");
-      const menuPopup = document.getElementById("menuPopup");
-      const chatBox = document.getElementById("chatBox");
-      const input = document.getElementById("userInput");
-      const btnMic = document.getElementById("btnMic");
+  </div> <!-- End .app-container -->
 
-      const tap = (id, fn) => {
-        const el = document.getElementById(id);
-        if (el) el.addEventListener("click", fn);
-      };
-
-      // Modals
-      tap("btnRenew", () => payModal.style.display = "flex");
-      tap("btnBanner", () => payModal.style.display = "flex");
-      tap("btnLocked", () => payModal.style.display = "flex");
-      tap("btnClosePay", () => payModal.style.display = "none");
-      tap("btnSkipPay", () => payModal.style.display = "none");
-
-      tap("btnProfile", () => profModal.style.display = "flex");
-      tap("menuOptProfile", () => { menuPopup.style.display = "none"; profModal.style.display = "flex"; });
-      tap("btnCloseProf", () => profModal.style.display = "none");
-
-      tap("menuOptSettings", () => { menuPopup.style.display = "none"; setModal.style.display = "flex"; });
-      tap("btnCloseSettings", () => setModal.style.display = "none");
-      tap("btnSettingsUpgrade", () => { setModal.style.display = "none"; payModal.style.display = "flex"; });
-
-      tap("btnCall", () => payModal.style.display = "flex");
-      tap("btnCallBack", () => payModal.style.display = "flex");
-      tap("btnRose", () => giftSheet.style.display = "flex");
-
-      // 3-Dots Menu
-      tap("btnMenu", (e) => {
-        e.stopPropagation();
-        menuPopup.style.display = menuPopup.style.display === "block" ? "none" : "block";
-      });
-      document.addEventListener("click", () => { if (menuPopup) menuPopup.style.display = "none"; });
-
-      tap("menuOptClear", () => {
-        if (confirm("Saari chats clear karni hain?")) {
-          chatHistory = [];
-          chatBox.innerHTML = `<div class="tag-today">Today</div><div class="msg bot">Chat reset ho gaya! Fir se shuru karte hain 😊<div class="time">Just now</div></div>`;
-        }
-      });
-            // Gifts Handling & UPI
-      giftSheet.addEventListener("click", (e) => {
-        if (e.target === giftSheet) giftSheet.style.display = "none";
-      });
-      document.querySelectorAll(".gift-item").forEach(card => {
-        card.addEventListener("click", () => {
-          document.querySelectorAll(".gift-item").forEach(c => c.classList.remove("active"));
-          card.classList.add("active");
-          giftAmount = card.getAttribute("data-price") || 9;
-          document.getElementById("btnSendGift").innerText = `Send Gift (₹${giftAmount})`;
-        });
-      });
-
-      const openUPI = (amount) => {
-        window.location.href = `upi://pay?pa=merchant@upi&pn=MeherAI&am=${amount}&cu=INR&tn=MeherAccess`;
-      };
-      tap("btnSendGift", () => openUPI(giftAmount));
-      tap("btnPayUPI", () => openUPI(49));
-
-      // Audio Waveform Player
-      const voiceAudio = new Audio("https://cdn.freesound.org/previews/320/320655_5260872-lq.mp3");
-      const vBars = document.querySelectorAll(".v-bar");
-
-      tap("btnVoice", function() {
-        const icon = this.querySelector("i");
-        if (voiceAudio.paused) {
-          voiceAudio.play().catch(() => {});
-          icon.className = "fa-solid fa-pause";
-          vBars.forEach(b => b.classList.add("active"));
-          voiceAudio.onended = () => {
-            icon.className = "fa-solid fa-play";
-            vBars.forEach(b => b.classList.remove("active"));
-          };
-        } else {
-          voiceAudio.pause();
-          icon.className = "fa-solid fa-play";
-          vBars.forEach(b => b.classList.remove("active"));
-        }
-      });
-
-      tap("btnVoiceIntro", () => {
-        voiceAudio.currentTime = 0;
-        voiceAudio.play().catch(() => {});
-      });
-
-      // Live Microphone Speech Recognition
-      let recognition = null;
-      if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-        const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
-        recognition = new SpeechRec();
-        recognition.continuous = false;
-        recognition.interimResults = false;
-        recognition.lang = "hi-IN";
-
-        recognition.onstart = () => {
-          btnMic.classList.add("recording");
-          input.placeholder = "Listening... bolo!";
-        };
-
-        recognition.onresult = (event) => {
-          const transcript = event.results[0][0].transcript;
-          input.value = transcript;
-          sendMessage();
-        };
-
-        recognition.onerror = () => {
-          btnMic.classList.remove("recording");
-          input.placeholder = "Message Meher...";
-        };
-
-        recognition.onend = () => {
-          btnMic.classList.remove("recording");
-          input.placeholder = "Message Meher...";
-        };
-      }
-
-      tap("btnMic", () => {
-        if (!recognition) {
-          alert("Browser voice support nahi karta. Chrome me try karein!");
-          return;
-        }
-        if (btnMic.classList.contains("recording")) {
-          recognition.stop();
-        } else {
-          recognition.start();
-        }
-      });
-            // Dynamic Replies & Chat Handler
-      const dynamicReplies = [
-        "Acha ji? Aise bologe ab mujhse? Thoda pyaar se baat karo na! 🙈",
-        "Haha tum na bade naughty ho rahe ho aaj kal... Chup chap padhai pe dhyan do thoda! 😂",
-        "Itna attitude kyu dikha rahe ho? Delhi ki ladki hoon, seedha dil par baat karti hoon! ✨",
-        "Mujhe pata tha tum yahi bologe! Aur batao, aaj mere bina man kaise lag raha tha?",
-        "Sach bolna, sirf mujhse hi itni baatein karte ho ya koi aur bhi line mein hai? 😜",
-        "Haye sach mein? Acha pehle promise karo tease nahi karoge!",
-        "Tumhari baaton mein alag hi nasha hai yaar... Acha lagta hai tumse baat karna.",
-        "Chalo maan liya! Ab batao aage kya plan hai? Coffee pe chaloge mere sath CP?",
-        "Arey wah! Itna smart kab se ho gaye tum? Thoda aur detail mein batao na... 😉"
-      ];
-      let lastIndex = -1;
-
-      async function sendMessage() {
-        const text = input.value.trim();
-        if (!text) return;
-
-        const userMsg = document.createElement("div");
-        userMsg.className = "msg user";
-        userMsg.innerHTML = `${text.replace(/</g, "&lt;")}<div class="time">Just now</div>`;
-        chatBox.appendChild(userMsg);
-        input.value = "";
-        chatBox.scrollTop = chatBox.scrollHeight;
-
-        chatHistory.push({ role: "user", content: text });
-
-        const typingIndicator = document.createElement("div");
-        typingIndicator.className = "msg bot";
-        typingIndicator.id = "typingIndicator";
-        typingIndicator.innerHTML = `<i>Meher typing...</i>`;
-        chatBox.appendChild(typingIndicator);
-        chatBox.scrollTop = chatBox.scrollHeight;
-
-        try {
-          const res = await fetch("/api/chat", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ messages: chatHistory })
-          });
-          const data = await res.json();
-          if (document.getElementById("typingIndicator")) typingIndicator.remove();
-
-          if (data && data.reply) {
-            appendBotMessage(data.reply);
-            return;
-          }
-        } catch (e) {}
-
-        setTimeout(() => {
-          if (document.getElementById("typingIndicator")) typingIndicator.remove();
-          let newIndex;
-          do {
-            newIndex = Math.floor(Math.random() * dynamicReplies.length);
-          } while (newIndex === lastIndex);
-          lastIndex = newIndex;
-
-          appendBotMessage(dynamicReplies[newIndex]);
-        }, 850);
-      }
-
-      function appendBotMessage(replyText) {
-        chatHistory.push({ role: "assistant", content: replyText });
-        const botMsg = document.createElement("div");
-        botMsg.className = "msg bot";
-        botMsg.innerHTML = `${replyText.replace(/</g, "&lt;")}<div class="time">Just now</div>`;
-        chatBox.appendChild(botMsg);
-        chatBox.scrollTop = chatBox.scrollHeight;
-      }
-
-      tap("btnSend", sendMessage);
-      input.addEventListener("keydown", (e) => {
-        if (e.key === "Enter") sendMessage();
-      });
-    });
-  </script>
+  <!-- SCRIPT -->
+  <script src="script.js"></script>
 </body>
 </html>
