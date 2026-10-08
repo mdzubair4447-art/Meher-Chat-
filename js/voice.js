@@ -66,21 +66,54 @@ packageCards.forEach(card => {
   });
 });
 
-// Voice Intro Button
-let isAudioPlaying = false;
-playVoiceIntroBtn.addEventListener('click', () => {
-  if (!isAudioPlaying) {
-    isAudioPlaying = true;
-    playVoiceIntroBtn.innerHTML = '<i class="fa-solid fa-pause"></i> Playing Voice Intro...';
-    setTimeout(() => {
+// Voice Intro Button (Real Speech)
+const playVoiceIntroBtn = document.getElementById('playVoiceIntroBtn');
+let isIntroPlaying = false;
+
+if (playVoiceIntroBtn) {
+  playVoiceIntroBtn.addEventListener('click', () => {
+    if (!('speechSynthesis' in window)) {
+      alert("Aapke phone ke browser mein voice audio support nahi hai.");
+      return;
+    }
+
+    if (isIntroPlaying) {
+      window.speechSynthesis.cancel();
+      isIntroPlaying = false;
       playVoiceIntroBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i> Play Voice Intro (0:12)';
-      isAudioPlaying = false;
-    }, 4000);
-  } else {
-    isAudioPlaying = false;
-    playVoiceIntroBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i> Play Voice Intro (0:12)';
-  }
-});
+      return;
+    }
+
+    window.speechSynthesis.cancel();
+    const introText = "Hey! Main Meher. Delhi University North Campus se literature student. Chai lover hoon aur sarcastic on bad days. Text me anytime!";
+    const utterance = new SpeechSynthesisUtterance(introText);
+
+    utterance.lang = 'hi-IN';
+    utterance.rate = 0.95;
+    utterance.pitch = 1.15;
+
+    const voices = window.speechSynthesis.getVoices();
+    const targetVoice = voices.find(v => v.lang.includes('hi') || v.lang.includes('IN') || v.name.toLowerCase().includes('female'));
+    if (targetVoice) utterance.voice = targetVoice;
+
+    utterance.onstart = () => {
+      isIntroPlaying = true;
+      playVoiceIntroBtn.innerHTML = '<i class="fa-solid fa-pause"></i> Playing Voice Intro...';
+    };
+
+    utterance.onend = () => {
+      isIntroPlaying = false;
+      playVoiceIntroBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i> Play Voice Intro (0:12)';
+    };
+
+    utterance.onerror = () => {
+      isIntroPlaying = false;
+      playVoiceIntroBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i> Play Voice Intro (0:12)';
+    };
+
+    window.speechSynthesis.speak(utterance);
+  });
+      }
 
 // Voice Note Mic Button
 voiceMsgBtn.addEventListener('click', () => {
