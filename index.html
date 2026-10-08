@@ -95,10 +95,9 @@
         <div class="profile-bio-box">
           Delhi University literature student. Chai lover, sarcastic on bad days, loyal 24/7. North Delhi vibes only. Text me before my classes start!
         </div>
-
-        <button class="btn-voice-intro" id="playVoiceIntroBtn">
-          <i class="fa-solid fa-volume-high"></i> Play Voice Intro (0:12)
-        </button>
+<button class="btn-voice-intro" id="playVoiceIntroBtn" onclick="playDirectAudio()">
+  <i class="fa-solid fa-volume-high"></i> Play Voice Intro (0:12)
+</button>
                 <div class="gallery-section-title">Photos (9)</div>
         <div class="photo-grid-3x3">
           <div class="photo-grid-item"><img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80" alt="Meher 1" class="gallery-img"></div>
@@ -226,6 +225,19 @@
   <script src="js/app.js"></script>
 <script src="js/chat.js"></script>
 <script src="js/voice.js"></script>
+  <script>
+    function playDirectAudio() {
+      alert("Button click register ho gaya!");
+
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+              const msg = new SpeechSynthesisUtterance("Hey! Main Meher. DU North Campus se literature student. Text me anytime!");
+        msg.lang = 'hi-IN';
+        msg.rate = 0.95;
+        window.speechSynthesis.speak(msg);
+      } else {
+        alert("Aapke phone browser mein speech engine nahi mila.");
+      }
+    }
+  </script>
   
-</body>
-</html>
