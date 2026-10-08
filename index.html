@@ -118,9 +118,10 @@
         <i class="fa-regular fa-comment-dots"></i> Message Meher
       </button>
     </div>
-        <!-- FULLSCREEN PHOTO LIGHTBOX -->
-    <div class="lightbox-modal" id="lightboxModal">
-      <img src="" alt="Enlarged preview" class="lightbox-img" id="lightboxImg" />
+    <!-- FULLSCREEN PHOTO LIGHTBOX -->
+    <div class="lightbox-modal" id="lightboxModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.92); z-index:9999; justify-content:center; align-items:center; backdrop-filter:blur(5px);">
+      <span id="closeLightboxBtn" style="position:absolute; top:20px; right:25px; color:#fff; font-size:32px; font-weight:bold; cursor:pointer;">&times;</span>
+      <img src="" alt="Meher" class="lightbox-img" id="lightboxImg" style="max-width:90%; max-height:80%; border-radius:12px; object-fit:contain; box-shadow:0 0 25px rgba(0,0,0,0.8);">
     </div>
         <!-- SETTINGS SCREEN -->
     <div class="screen-view" id="settingsScreen">
@@ -250,4 +251,36 @@
       };
     }
   </script>
-  
+    <script>
+    // Lightbox Zoom Handler
+    document.addEventListener('DOMContentLoaded', () => {
+      const lightboxModal = document.getElementById('lightboxModal');
+      const lightboxImg = document.getElementById('lightboxImg');
+      const closeBtn = document.getElementById('closeLightboxBtn');
+
+      document.querySelectorAll('.photo-grid-item img').forEach(img => {
+        img.style.cursor = 'pointer';
+        img.addEventListener('click', () => {
+          lightboxImg.src = img.src;
+          lightboxModal.style.display = 'flex';
+        });
+      });
+
+      if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+          lightboxModal.style.display = 'none';
+        });
+      }
+
+      if (lightboxModal) {
+        lightboxModal.addEventListener('click', (e) => {
+          if (e.target !== lightboxImg) {
+            lightboxModal.style.display = 'none';
+          }
+        });
+      }
+    });
+  </script>
+</body>
+  </html>
+
