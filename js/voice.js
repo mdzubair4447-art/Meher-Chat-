@@ -66,54 +66,45 @@ packageCards.forEach(card => {
   });
 });
 
-// Voice Intro Button (Real Speech)
+// Voice Intro Button (Direct Audio Link)
 const playVoiceIntroBtn = document.getElementById('playVoiceIntroBtn');
-let isIntroPlaying = false;
+const meherAudio = new Audio('https://actions.google.com/sounds/v1/human_voices/female_voice_intro.ogg'); // Fallback demo voice
+
+let isAudioRunning = false;
 
 if (playVoiceIntroBtn) {
   playVoiceIntroBtn.addEventListener('click', () => {
-    if (!('speechSynthesis' in window)) {
-      alert("Aapke phone ke browser mein voice audio support nahi hai.");
-      return;
-    }
-
-    if (isIntroPlaying) {
-      window.speechSynthesis.cancel();
-      isIntroPlaying = false;
+    // Agar pehle se chal raha ho toh pause karein
+    if (isAudioRunning) {
+      meherAudio.pause();
+      meherAudio.currentTime = 0;
+      isAudioRunning = false;
       playVoiceIntroBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i> Play Voice Intro (0:12)';
       return;
     }
 
-    window.speechSynthesis.cancel();
-    const introText = "Hey! Main Meher. Delhi University North Campus se literature student. Chai lover hoon aur sarcastic on bad days. Text me anytime!";
-    const utterance = new SpeechSynthesisUtterance(introText);
+    // Play Voice
+    playVoiceIntroBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Playing...';
+    
+    meherAudio.play()
+      .then(() => {
+        isAudioRunning = true;
+        playVoiceIntroBtn.innerHTML = '<i class="fa-solid fa-pause"></i> Playing Voice Intro...';
+      })
+      .catch((err) => {
+        console.error("Audio playback error:", err);
+        // Fallback speech alert
+        alert("Audio play karne ke liye screen par ek baar tap karke dobara dabayein.");
+        playVoiceIntroBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i> Play Voice Intro (0:12)';
+        isAudioRunning = false;
+      });
 
-    utterance.lang = 'hi-IN';
-    utterance.rate = 0.95;
-    utterance.pitch = 1.15;
-
-    const voices = window.speechSynthesis.getVoices();
-    const targetVoice = voices.find(v => v.lang.includes('hi') || v.lang.includes('IN') || v.name.toLowerCase().includes('female'));
-    if (targetVoice) utterance.voice = targetVoice;
-
-    utterance.onstart = () => {
-      isIntroPlaying = true;
-      playVoiceIntroBtn.innerHTML = '<i class="fa-solid fa-pause"></i> Playing Voice Intro...';
-    };
-
-    utterance.onend = () => {
-      isIntroPlaying = false;
+    meherAudio.onended = () => {
+      isAudioRunning = false;
       playVoiceIntroBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i> Play Voice Intro (0:12)';
     };
-
-    utterance.onerror = () => {
-      isIntroPlaying = false;
-      playVoiceIntroBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i> Play Voice Intro (0:12)';
-    };
-
-    window.speechSynthesis.speak(utterance);
   });
-      }
+}
 
 // Voice Note Mic Button
 voiceMsgBtn.addEventListener('click', () => {
