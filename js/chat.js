@@ -312,4 +312,18 @@ if (rowClearHistory) rowClearHistory.addEventListener('click', clearAllMessages)
 document.addEventListener('DOMContentLoaded', () => {
   loadInitialChatHooks();
 });
-  
+  // ==========================================
+// 100% ANTI-DOWNLOAD & CONTEXT MENU BLOCK
+// ==========================================
+document.addEventListener('contextmenu', function(e) {
+  e.preventDefault();
+  return false;
+});
+
+document.addEventListener('dragstart', function(e) {
+  if (e.target.tagName === 'IMG') {
+    e.preventDefault();
+    return false;
+  }
+});
+
