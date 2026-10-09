@@ -1210,4 +1210,254 @@ drawerObserver.observe(document.body, { childList: true, subtree: true });
     initModals();
   }
 })();
-    
+    // =======================================================
+// PHASE 3: SETTINGS & USER PROFILE LOGIC CONTROLLER
+// =======================================================
+(function initPhase3System() {
+  // Global User State Memory
+  const USER_STORE = {
+    getName: () => localStorage.getItem('meher_user_name') || '',
+    setName: (val) => localStorage.setItem('meher_user_name', val.trim()),
+    getPhone: () => localStorage.getItem('meher_user_phone') || '+91 98765 43210',
+    getAvatar: () => localStorage.getItem('meher_user_avatar') || 'assets/default_avatar.png',
+    setAvatar: (val) => localStorage.setItem('meher_user_avatar', val),
+    getLang: () => localStorage.getItem('meher_user_lang') || 'Hinglish'
+  };
+
+  // Strictly filter out "Bhai", "Bro" from calling behavior
+  window.getMeherAddressUser = function() {
+    const customName = USER_STORE.getName();
+    if (customName) return customName;
+    return 'yaar'; // Natural default, zero "bhai"
+  };
+
+  function renderPhase3Views() {
+    const viewsHtml = `
+      <!-- SETTINGS MAIN PAGE -->
+      <div class="full-screen-view" id="phase3-settings-page">
+        <div class="view-header-bar">
+          <button class="view-back-btn" id="btn-close-settings">←</button>
+          <span class="view-title-text">Settings</span>
+          <div style="width: 24px;"></div>
+        </div>
+
+        <div class="view-content-body">
+          <!-- User Identity Bubble Pill -->
+          <div class="user-identity-pill" id="trigger-user-profile">
+            <div class="user-pill-left">
+              <img src="${USER_STORE.getAvatar()}" id="pill-user-img" class="user-thumb-avatar" alt="User">
+              <div class="user-pill-details">
+                <span class="user-pill-name" id="pill-user-name">${USER_STORE.getName() || 'Set your name'}</span>
+                <span class="user-pill-phone">${USER_STORE.getPhone()}</span>
+              </div>
+            </div>
+            <span class="user-pill-edit-icon">✎</span>
+          </div>
+
+          <!-- Dual Grid Cards -->
+          <div class="dual-card-grid">
+            <div class="feature-dash-card" id="card-talktime-open">
+              <div>
+                <div class="dash-card-title">Talk Time</div>
+                <div class="dash-card-desc">Remaining audio notes & photo quota.</div>
+              </div>
+              <span class="dash-card-badge badge-green">5 Voice Left</span>
+            </div>
+            <div class="feature-dash-card" id="card-premium-open">
+              <div>
+                <div class="dash-card-title">Premium Access</div>
+                <div class="dash-card-desc">Priority audio calling & zero limits.</div>
+              </div>
+              <span class="dash-card-badge badge-purple">Active Tier</span>
+            </div>
+          </div>
+
+          <!-- Toggles & Lists -->
+          <div class="settings-menu-group">
+            <div class="settings-row-item">
+              <span>Notifications</span>
+              <label class="switch-toggle">
+                <input type="checkbox" id="toggle-notif" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="settings-row-item" id="btn-open-lang">
+              <span>Language</span>
+              <span style="color:#8e949a;" id="display-selected-lang">${USER_STORE.getLang()} ›</span>
+            </div>
+            <div class="settings-row-item" id="btn-share-app">
+              <span>Share Meher</span>
+              <span style="color:#8e949a;">🔗 ›</span>
+            </div>
+          </div>
+
+          <!-- About Meher Description -->
+          <div class="about-meher-box">
+            <strong style="color:#e4e6eb; display:block; margin-bottom:4px;">About Meher</strong>
+            Meher is your 20-year-old DU North Campus companion. A mix of dry wit, late-night chai thoughts, candid voice notes, and genuine Delhi college life. No corporate script—just unfiltered conversations.
+          </div>
+
+          <!-- Danger Action -->
+          <button class="btn-delete-account" id="btn-delete-acc">Delete Account / Reset Data</button>
+        </div>
+      </div>
+
+      <!-- USER PROFILE SUB-PAGE -->
+      <div class="full-screen-view" id="phase3-profile-page">
+        <div class="view-header-bar">
+          <button class="view-back-btn" id="btn-close-profile">←</button>
+          <span class="view-title-text">Profile</span>
+          <div style="width: 24px;"></div>
+        </div>
+
+        <div class="view-content-body">
+          <div class="profile-hero-center">
+            <div class="user-large-avatar-box" id="avatar-picker-trigger">
+              <img src="${USER_STORE.getAvatar()}" id="profile-large-img" alt="Profile">
+              <div class="camera-floating-badge">📷</div>
+            </div>
+            <input type="file" id="user-file-input" accept="image/*" style="display:none;">
+          </div>
+
+          <div class="profile-input-group">
+            <label class="profile-field-label">YOUR NAME</label>
+            <div class="profile-name-bar">
+              <input type="text" class="profile-name-input" id="input-user-name" placeholder="What should Meher call you?" value="${USER_STORE.getName()}">
+              <button class="btn-save-name" id="btn-save-username">Save</button>
+            </div>
+            <div class="profile-helper-note">
+              Meher will naturally call you by this name. If empty, she'll use natural pronouns ("tu", "teri", "tumhe", "yaar").
+            </div>
+          </div>
+
+          <div class="profile-input-group" style="margin-top: 14px;">
+            <label class="profile-field-label">REGISTERED NUMBER</label>
+            <div class="profile-name-bar" style="background:#121519;">
+              <input type="text" class="profile-name-input" value="${USER_STORE.getPhone()}" disabled style="color:#727a82;">
+              <span style="font-size:11px; color:#00a884; font-weight:600;">Verified</span>
+            </div>
+            <div class="profile-helper-note">One verified number per account prevents spam and protects session limits.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LANGUAGE PICKER MODAL -->
+      <div class="phase2-modal-backdrop" id="modal-lang-backdrop">
+        <div class="phase2-dialog-card" style="max-height: 400px; display:flex; flex-direction:column;">
+          <div class="dialog-header-title">Select Language</div>
+          <div style="overflow-y:auto; display:flex; flex-direction:column; gap:4px; margin-bottom:12px;" id="lang-list-container">
+            ${['Hinglish (Default)', 'Hindi', 'English', 'Punjabi', 'Bengali', 'Marathi', 'Tamil', 'Telugu', 'Gujarati', 'Urdu', 'Kannada', 'Malayalam'].map(l => `
+              <button class="lang-item-btn ${USER_STORE.getLang() === l ? 'selected' : ''}" data-lang="${l}">
+                <span>${l}</span>${USER_STORE.getLang() === l ? '✓' : ''}
+              </button>
+            `).join('')}
+          </div>
+          <button class="dialog-action-btn dialog-btn-cancel" id="btn-close-lang">Done</button>
+        </div>
+      </div>
+    `;
+
+    document.body.insertAdjacentHTML('beforeend', viewsHtml);
+    bindPhase3Events();
+  }
+
+  function bindPhase3Events() {
+    const pageSettings = document.getElementById('phase3-settings-page');
+    const pageProfile = document.getElementById('phase3-profile-page');
+    const modalLang = document.getElementById('modal-lang-backdrop');
+
+    // 1. Open/Close Settings
+    document.getElementById('btn-close-settings')?.addEventListener('click', () => pageSettings.style.display = 'none');
+    document.getElementById('item-setting')?.addEventListener('click', () => {
+      document.getElementById('phase2-dropdown-menu').style.display = 'none';
+      pageSettings.style.display = 'flex';
+    });
+
+    // 2. Open/Close Profile Sub-page
+    document.getElementById('trigger-user-profile')?.addEventListener('click', () => {
+      pageProfile.style.display = 'flex';
+    });
+    document.getElementById('btn-close-profile')?.addEventListener('click', () => {
+      pageProfile.style.display = 'none';
+    });
+
+    // 3. Save User Name & Sync Everywhere
+    document.getElementById('btn-save-username')?.addEventListener('click', () => {
+      const nameInput = document.getElementById('input-user-name');
+      if (nameInput) {
+        USER_STORE.setName(nameInput.value);
+        document.getElementById('pill-user-name').innerText = nameInput.value || 'Set your name';
+        alert(`Saved! Meher will now address you as ${nameInput.value || 'yaar'}.`);
+      }
+    });
+
+    // 4. Avatar Upload & Storage
+    const fileInput = document.getElementById('user-file-input');
+    document.getElementById('avatar-picker-trigger')?.addEventListener('click', () => fileInput.click());
+    fileInput?.addEventListener('change', function() {
+      const file = this.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const base64 = e.target.result;
+          USER_STORE.setAvatar(base64);
+          document.getElementById('profile-large-img').src = base64;
+          document.getElementById('pill-user-img').src = base64;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    // 5. Language Modal
+    document.getElementById('btn-open-lang')?.addEventListener('click', () => modalLang.style.display = 'flex');
+    document.getElementById('btn-close-lang')?.addEventListener('click', () => modalLang.style.display = 'none');
+    document.querySelectorAll('.lang-item-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const selected = this.getAttribute('data-lang');
+        localStorage.setItem('meher_user_lang', selected);
+        document.getElementById('display-selected-lang').innerText = selected + ' ›';
+        modalLang.style.display = 'none';
+      });
+    });
+
+    // 6. Share Meher (Native Web Share)
+    document.getElementById('btn-share-app')?.addEventListener('click', async () => {
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            title: 'Chat with Meher',
+            text: 'Meet Meher - 20-year-old DU North Campus student.',
+            url: window.location.href
+          });
+        } catch (e) {}
+      } else {
+        navigator.clipboard.writeText(window.location.href);
+        alert('App link copied to clipboard! Share it on WhatsApp or Instagram.');
+      }
+    });
+
+    // 7. Danger Action: Delete Account / Reset Data
+    document.getElementById('btn-delete-acc')?.addEventListener('click', () => {
+      if (confirm('Delete all account details, chat memory, and profile data permanently?')) {
+        localStorage.clear();
+        location.reload();
+      }
+    });
+
+    // Dual card triggers
+    document.getElementById('card-talktime-open')?.addEventListener('click', () => {
+      pageSettings.style.display = 'none';
+      document.getElementById('item-talktime')?.click();
+    });
+    document.getElementById('card-premium-open')?.addEventListener('click', () => {
+      alert('You are currently on the Unlimited Pro Explorer Access.');
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', renderPhase3Views);
+  } else {
+    renderPhase3Views();
+  }
+})();
+               
