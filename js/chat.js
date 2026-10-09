@@ -1460,4 +1460,42 @@ drawerObserver.observe(document.body, { childList: true, subtree: true });
     renderPhase3Views();
   }
 })();
-               
+             // =======================================================
+// MEHER DYNAMIC SPLASH CONTROLLER
+// =======================================================
+(function launchDynamicSplash() {
+  function createSplash() {
+    const splashMarkup = `
+      <div id="meher-dynamic-splash">
+        <div class="splash-avatar-wrapper">
+          <div class="splash-ring-glow"></div>
+          <img src="assets/meher_dp.png" class="splash-avatar-img" alt="Meher">
+        </div>
+        <div class="splash-brand-title">
+          <span>Meher</span>
+          <svg class="splash-verified-tick" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+        </div>
+        <div class="splash-campus-tag">North Campus • DU</div>
+      </div>
+    `;
+
+    document.body.insertAdjacentHTML('afterbegin', splashMarkup);
+
+    const splashEl = document.getElementById('meher-dynamic-splash');
+
+    // 1.6s display time, then seamless dissolvation
+    setTimeout(() => {
+      if (splashEl) {
+        splashEl.classList.add('splash-exit-active');
+        setTimeout(() => splashEl.remove(), 550);
+      }
+    }, 1600);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', createSplash);
+  } else {
+    createSplash();
+  }
+})();
+
