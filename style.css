@@ -908,4 +908,44 @@ img {
   color: #8696a0;
   font-size: 11px;
   }
+/* ==========================================
+   CHAT LIST PREVIEW & UNREAD BADGE
+   ========================================== */
+.chat-item-preview {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.chat-last-message {
+  color: #8696a0;
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 190px;
+}
+
+.chat-unread-badge {
+  background-color: #00a884;
+  color: #111b21;
+  font-size: 11px;
+  font-weight: 700;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  box-sizing: border-box;
+  animation: popBadge 0.3s ease-out;
+}
+
+@keyframes popBadge {
+  0% { transform: scale(0); }
+  80% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
 
