@@ -393,4 +393,75 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
     }
   });
 })();
- 
+ // ==========================================
+// DEEP PERSISTENT MEMORY & AUTO-SYNC
+// ==========================================
+const MEHER_STORAGE_KEY = 'meher_deep_chat_memory_v1';
+
+// 1. Storage mein save karne ka function
+function saveMemoryToStorage() {
+  try {
+    if (typeof conversationHistory !== 'undefined' && Array.isArray(conversationHistory)) {
+      // Sirf actual user aur meher ke messages save karein
+      const chatToSave = conversationHistory.filter(m => m.role === 'user' || m.role === 'assistant');
+      localStorage.setItem(MEHER_STORAGE_KEY, JSON.stringify(chatToSave));
+    }
+  } catch (err) {
+    console.warn("Storage auto-save issue:", err);
+  }
+}
+
+// 2. Refresh par wapas load karne ka function
+function restoreMemoryFromStorage() {
+  try {
+    const rawData = localStorage.getItem(MEHER_STORAGE_KEY);
+    if (!rawData) return false;
+
+    const savedMessages = JSON.parse(rawData);
+    if (!Array.isArray(savedMessages) || savedMessages.length === 0) return false;
+
+    // Chat history array restore karein
+    savedMessages.forEach(msg => {
+      // Memory array mein wapas push karein
+      if (typeof conversationHistory !== 'undefined') {
+        const exists = conversationHistory.some(m => m.content === msg.content && m.role === msg.role);
+        if (!exists) {
+          conversationHistory.push(msg);
+        }
+      }
+      // Screen par bubble render karein (agar renderMessage/appendMessage function exist karta hai)
+      if (typeof renderMessage === 'function') {
+        renderMessage(msg.content, msg.role === 'user' ? 'user' : 'meher');
+      } else if (typeof appendMessage === 'function') {
+        appendMessage(msg.content, msg.role === 'user' ? 'user' : 'meher');
+      }
+    });
+
+    return true;
+  } catch (err) {
+    console.warn("Storage restore issue:", err);
+    return false;
+  }
+}
+
+// 3. Clear Chat par memory bhi clear karein
+const originalClearChat = window.clearChat;
+window.clearChat = function() {
+  try {
+    localStorage.removeItem(MEHER_STORAGE_KEY);
+  } catch (e) {}
+  if (typeof originalClearChat === 'function') {
+    originalClearChat();
+  } else {
+    location.reload();
+  }
+};
+
+// 4. Auto-restore on load aur message send hook
+window.addEventListener('DOMContentLoaded', () => {
+  restoreMemoryFromStorage();
+});
+
+// Periodic auto-sync
+setInterval(saveMemoryToStorage, 2000);
+
