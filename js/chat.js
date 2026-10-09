@@ -63,7 +63,7 @@ function setTyping(isTyping) {
 
 // 1. Initial Entry Elements Builder (Sequence: Voice Note -> Missed Call -> Blurred Pic -> First Text)
 function loadInitialChatHooks() {
-  if (chatContainer.children.length > 0) return;
+    chatContainer.innerHTML = '';
 
   // (A) First Voice Note Bubble
   const voiceRow = document.createElement('div');
