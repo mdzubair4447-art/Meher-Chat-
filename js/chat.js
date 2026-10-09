@@ -827,4 +827,49 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 })();
+// ==========================================
+// CHAT LIST PREVIEW & BADGE AUTO-SYNC
+// ==========================================
+function updateChatListPreview(lastText, isVoice = false) {
+  const previewContainer = document.querySelector('.chat-last-message') || document.querySelector('.conversation-preview');
+  const badgeContainer = document.querySelector('.chat-unread-badge') || document.querySelector('.unread-count');
+  const timeContainer = document.querySelector('.chat-time-stamp') || document.querySelector('.conversation-time');
+
+  const now = new Date();
+  const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+
+  if (previewContainer) {
+    if (isVoice) {
+      previewContainer.innerHTML = `<span style="color: #00a884; display: inline-flex; align-items: center; gap: 4px;">🎤 Voice message (0:14)</span>`;
+    } else {
+      previewContainer.innerText = lastText;
+    }
+  }
+
+  if (timeContainer) {
+    timeContainer.innerText = timeStr;
+  }
+
+  // Agar user chat room se bahar hai toh badge dikhayein
+  if (badgeContainer) {
+    badgeContainer.style.display = 'flex';
+    badgeContainer.innerText = '1';
+  }
+}
+
+// Jab user chat window open kare toh badge automatically hide ho jaye
+function markChatAsRead() {
+  const badgeContainer = document.querySelector('.chat-unread-badge') || document.querySelector('.unread-count');
+  if (badgeContainer) {
+    badgeContainer.style.display = 'none';
+  }
+}
+
+// Chat screen open hone par read mark karein
+window.addEventListener('DOMContentLoaded', markChatAsRead);
+document.addEventListener('click', function(e) {
+  if (e.target.closest('#chat-messages, #chat-input, .chat-window')) {
+    markChatAsRead();
+  }
+});
 
