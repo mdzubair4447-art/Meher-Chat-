@@ -994,4 +994,83 @@ img {
   pointer-events: auto !important;
   cursor: pointer !important;
 }
+/* ==========================================
+   INSTAGRAM DM PIXEL-PERFECT THEME & BUBBLES
+   ========================================== */
+
+/* 1. Deep OLED Black Canvas & System Typography */
+#chat-container, 
+.chat-window, 
+#chat-messages {
+  background-color: #0b0e11 !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+}
+
+/* 2. Meher Bubble (Deep Graphite Charcoal + Soft Off-White Text) */
+.meher-bubble, 
+.chat-bubble.meher {
+  background-color: #212529 !important;
+  color: #e4e6eb !important;
+  font-size: 14.5px !important;
+  line-height: 1.4 !important;
+  letter-spacing: -0.15px !important;
+  padding: 8px 14px !important;
+  border-radius: 18px !important;
+  border-bottom-left-radius: 4px !important;
+  max-width: 72% !important;
+  align-self: flex-start !important;
+  margin: 3px 0 !important;
+  border: 1px solid rgba(255, 255, 255, 0.04) !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* 3. User Bubble (Muted Instagram Cobalt / Dark-Indigo) */
+.user-bubble, 
+.chat-bubble.user {
+  background: #3797f0 !important;
+  color: #ffffff !important;
+  font-size: 14.5px !important;
+  line-height: 1.4 !important;
+  letter-spacing: -0.15px !important;
+  padding: 8px 14px !important;
+  border-radius: 18px !important;
+  border-bottom-right-radius: 4px !important;
+  max-width: 72% !important;
+  align-self: flex-end !important;
+  margin: 3px 0 !important;
+  border: none !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25) !important;
+}
+
+/* 4. Timestamps & Neutral Subtext */
+.chat-time, 
+.bubble-timestamp {
+  color: #8e949a !important;
+  font-size: 10.5px !important;
+  margin-top: 3px !important;
+}
+
+/* 5. Seamless Integrated Bottom Input Bar */
+.chat-input-bar, 
+.input-container {
+  background-color: #0b0e11 !important;
+  border-top: 1px solid #1c2127 !important;
+  padding: 8px 12px !important;
+}
+
+.chat-input-bar input, 
+#chat-input {
+  background-color: #1a1f24 !important;
+  border: 1px solid #282f37 !important;
+  border-radius: 22px !important;
+  color: #f0f2f5 !important;
+  font-size: 14px !important;
+  padding: 9px 16px !important;
+  outline: none !important;
+}
+
+.chat-input-bar input::placeholder, 
+#chat-input::placeholder {
+  color: #727a82 !important;
+}
 
