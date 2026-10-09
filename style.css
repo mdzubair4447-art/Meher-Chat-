@@ -1512,4 +1512,370 @@ img {
   background-color: #ed4956;
   color: #ffffff;
   }
+/* =======================================================
+   PHASE 3: SETTINGS PAGE & USER PROFILE SYSTEM
+   ======================================================= */
 
+/* Full-Screen Views (Settings & Profile) */
+.full-screen-view {
+  position: fixed;
+  inset: 0;
+  background-color: #0b0e11;
+  z-index: 10020;
+  display: none;
+  flex-direction: column;
+  overflow-y: auto;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: #f0f2f5;
+  box-sizing: border-box;
+}
+
+.view-header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  background-color: #0b0e11;
+  border-bottom: 1px solid #1c2127;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.view-back-btn {
+  background: none;
+  border: none;
+  color: #f5f5f5;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+}
+
+.view-title-text {
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+}
+
+.view-content-body {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 480px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* User Identity Bubble Pill */
+.user-identity-pill {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #1a1f24;
+  border: 1px solid #282f37;
+  border-radius: 16px;
+  padding: 12px 14px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.user-identity-pill:active {
+  background-color: #242c34;
+}
+
+.user-pill-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-thumb-avatar {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  object-fit: cover;
+  background-color: #282f37;
+  border: 2px solid #0095f6;
+}
+
+.user-pill-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-pill-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: #f5f5f5;
+}
+
+.user-pill-phone {
+  font-size: 12px;
+  color: #8e949a;
+}
+
+.user-pill-edit-icon {
+  color: #8e949a;
+  font-size: 16px;
+}
+
+/* 2-Card Dual Grid */
+.dual-card-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.feature-dash-card {
+  background-color: #1a1f24;
+  border: 1px solid #282f37;
+  border-radius: 14px;
+  padding: 14px 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.dash-card-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #f0f2f5;
+}
+
+.dash-card-desc {
+  font-size: 11px;
+  color: #8e949a;
+  line-height: 1.3;
+}
+
+.dash-card-badge {
+  font-size: 10.5px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 10px;
+  align-self: flex-start;
+  margin-top: 4px;
+}
+
+.badge-green {
+  background-color: rgba(0, 168, 132, 0.15);
+  color: #00a884;
+}
+
+.badge-purple {
+  background-color: rgba(110, 64, 201, 0.2);
+  color: #a371f7;
+}
+
+/* Settings List Group */
+.settings-menu-group {
+  background-color: #1a1f24;
+  border: 1px solid #282f37;
+  border-radius: 14px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.settings-row-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 13px 14px;
+  border-bottom: 1px solid #222930;
+  font-size: 13.5px;
+  color: #f0f2f5;
+  cursor: pointer;
+}
+
+.settings-row-item:last-child {
+  border-bottom: none;
+}
+
+.settings-row-item:active {
+  background-color: #242c34;
+}
+
+/* Toggle Switch */
+.switch-toggle {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 22px;
+}
+
+.switch-toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background-color: #2e3640;
+  transition: 0.2s;
+  border-radius: 22px;
+}
+
+.toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 3px;
+  bottom: 3px;
+  background-color: #ffffff;
+  transition: 0.2s;
+  border-radius: 50%;
+}
+
+input:checked + .toggle-slider {
+  background-color: #0095f6;
+}
+
+input:checked + .toggle-slider:before {
+  transform: translateX(18px);
+}
+
+/* About Persona Card */
+.about-meher-box {
+  background-color: #121519;
+  border: 1px solid #222830;
+  border-radius: 12px;
+  padding: 12px;
+  font-size: 12px;
+  color: #8e949a;
+  line-height: 1.45;
+}
+
+/* Danger Zone */
+.btn-delete-account {
+  color: #ed4956;
+  background: none;
+  border: 1px solid rgba(237, 73, 86, 0.3);
+  padding: 12px;
+  border-radius: 12px;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+}
+
+/* USER PROFILE SUB-PAGE STYLING */
+.profile-hero-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 18px 0;
+}
+
+.user-large-avatar-box {
+  position: relative;
+  width: 104px;
+  height: 104px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.user-large-avatar-box img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #0095f6;
+  background-color: #1a1f24;
+}
+
+.camera-floating-badge {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #0095f6;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #0b0e11;
+  font-size: 14px;
+}
+
+.profile-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.profile-field-label {
+  font-size: 12px;
+  color: #8e949a;
+  font-weight: 500;
+}
+
+.profile-name-bar {
+  display: flex;
+  align-items: center;
+  background-color: #1a1f24;
+  border: 1px solid #282f37;
+  border-radius: 12px;
+  padding: 4px 12px;
+}
+
+.profile-name-input {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  color: #ffffff;
+  font-size: 14.5px;
+  padding: 8px 0;
+  font-family: inherit;
+}
+
+.btn-save-name {
+  background: #0095f6;
+  border: none;
+  color: #ffffff;
+  padding: 5px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.profile-helper-note {
+  font-size: 11.5px;
+  color: #727a82;
+  margin-top: 4px;
+  line-height: 1.4;
+}
+
+/* Language Selection Modal */
+.lang-item-btn {
+  background: none;
+  border: none;
+  color: #f0f2f5;
+  padding: 10px 14px;
+  font-size: 13.5px;
+  text-align: left;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+}
+
+.lang-item-btn:active, .lang-item-btn.selected {
+  background-color: #28313a;
+  color: #0095f6;
+  }
+  
