@@ -63,53 +63,68 @@ function setTyping(isTyping) {
 
 // 1. Initial Entry Elements Builder (Sequence: Voice Note -> Missed Call -> Blurred Pic -> First Text)
 function loadInitialChatHooks() {
-    chatContainer.innerHTML = '';
+  chatContainer.innerHTML = '';
 
-  // (A) First Voice Note Bubble
+  // (A) First Voice Note Bubble (WhatsApp Dark Voice Note Style)
   const voiceRow = document.createElement('div');
   voiceRow.className = 'msg-row meher';
+  voiceRow.style.cssText = 'display:flex;margin:6px 0;width:100%;justify-content:flex-start;';
   voiceRow.innerHTML = `
-    <div class="msg-bubble voice-bubble">
-      <button class="voice-play-btn" id="entryAudioBtn" onclick="toggleEntryAudio(this)">▶</button>
-      <div class="voice-wave-ui">
-        <span></span><span></span><span class="tall"></span><span></span><span class="tall"></span><span></span>
+    <div style="background:#202c33;padding:8px 12px;border-radius:0 16px 16px 16px;display:flex;align-items:center;gap:10px;min-width:215px;box-shadow:0 1px 2px rgba(0,0,0,0.3);">
+      <button onclick="toggleEntryAudio(this)" style="background:#00a884;border:none;color:#111b21;width:32px;height:32px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;font-weight:bold;">▶</button>
+      <div style="display:flex;gap:3px;align-items:center;flex:1;height:20px;">
+        <span style="width:3px;height:6px;background:#8696a0;border-radius:2px;"></span>
+        <span style="width:3px;height:14px;background:#00a884;border-radius:2px;"></span>
+        <span style="width:3px;height:9px;background:#00a884;border-radius:2px;"></span>
+        <span style="width:3px;height:18px;background:#00a884;border-radius:2px;"></span>
+        <span style="width:3px;height:12px;background:#00a884;border-radius:2px;"></span>
+        <span style="width:3px;height:19px;background:#00a884;border-radius:2px;"></span>
+        <span style="width:3px;height:10px;background:#8696a0;border-radius:2px;"></span>
+        <span style="width:3px;height:15px;background:#8696a0;border-radius:2px;"></span>
       </div>
-      <span class="voice-time">0:14</span>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;">
+        <span style="font-size:11px;color:#8696a0;font-family:sans-serif;">0:14</span>
+        <span style="font-size:9px;color:#8696a0;margin-top:2px;">${getCurrentTime()}</span>
+      </div>
       <audio id="entryAudio" src="meher_intro.mp3"></audio>
-      <span class="msg-time">${getCurrentTime()}</span>
     </div>
   `;
   chatContainer.appendChild(voiceRow);
 
-  // (B) Missed Audio Call Bubble
+  // (B) WhatsApp Center Missed Call System Banner
   const callRow = document.createElement('div');
-  callRow.className = 'missed-call-banner';
+  callRow.style.cssText = 'display:flex;justify-content:center;margin:12px 0;width:100%;';
   callRow.innerHTML = `
-    <span class="call-icon">📞</span>
-    <div class="call-info">
-      <strong>Missed audio call</strong>
-      <small>12 mins ago</small>
+    <div style="background:#182229;color:#8696a0;padding:5px 14px;border-radius:8px;font-size:11.5px;display:flex;align-items:center;gap:6px;box-shadow:0 1px 1px rgba(0,0,0,0.25);font-family:sans-serif;">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="#f15c6d">
+        <path d="M20 15.5c-1.2 0-2.4-.2-3.6-.6-.3-.1-.7 0-1 .2l-2.2 2.2c-2.8-1.4-5.1-3.8-6.6-6.6l2.2-2.2c.3-.3.4-.7.2-1-.4-1.1-.6-2.3-.6-3.5 0-.6-.4-1-1-1H4c-.6 0-1 .4-1 1 0 9.4 7.6 17 17 17 .6 0 1-.4 1-1v-3.5c0-.6-.4-1-1-1z"/>
+      </svg>
+      <span style="color:#e9edef;font-weight:500;">Missed voice call</span>
+      <span style="color:#8696a0;font-size:10.5px;">• 12m ago</span>
     </div>
   `;
   chatContainer.appendChild(callRow);
 
-  // (C) Blurred Teaser Image Bubble
+  // (C) Instagram Square Image Card (Rounded Edges + Blurred Teaser + Subtle Timestamp)
   const imgRow = document.createElement('div');
   imgRow.className = 'msg-row meher';
+  imgRow.style.cssText = 'display:flex;margin:6px 0;width:100%;justify-content:flex-start;';
   imgRow.innerHTML = `
-    <div class="msg-bubble image-bubble protected-bubble">
-      <div class="blur-box">
-        <img src="img1.jpg.jpeg" alt="Teaser" class="blurred-pic" />
-        <div class="blur-lock-text">🔒 Locked candid</div>
+    <div style="position:relative;width:220px;height:220px;border-radius:18px;overflow:hidden;background:#262626;box-shadow:0 2px 8px rgba(0,0,0,0.35);border:1px solid #333;">
+      <img src="dp.jpg.jpeg" alt="Locked Candid" style="width:100%;height:100%;object-fit:cover;filter:blur(16px);transform:scale(1.15);pointer-events:none;display:block;" />
+      <div style="position:absolute;inset:0;background:rgba(0,0,0,0.2);display:flex;align-items:center;justify-content:center;">
+        <span style="background:rgba(20,20,20,0.7);backdrop-filter:blur(4px);color:#fff;padding:6px 12px;border-radius:20px;font-size:11px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;letter-spacing:0.4px;">
+          🔒 Locked photo
+        </span>
       </div>
-      <span class="msg-time">${getCurrentTime()}</span>
+      <span style="position:absolute;bottom:8px;right:10px;font-size:9.5px;color:rgba(255,255,255,0.75);background:rgba(0,0,0,0.4);padding:2px 6px;border-radius:10px;font-family:sans-serif;">${getCurrentTime()}</span>
     </div>
   `;
   chatContainer.appendChild(imgRow);
 
   // (D) First Text Hook Bubble
   appendMessage("Bio dekh kar aa toh gaye... Ab batao, chai ya coffee? Aur galat answer mat dena bilkul bhi.", 'meher');
-}
+    }
 
 // Voice Note Player Toggle
 window.toggleEntryAudio = function(btn) {
