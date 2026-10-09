@@ -262,63 +262,43 @@ const conversationHistory = [
 ];
 
 // OpenRouter LLM Call with Natural Delay & Multi-Bubble Delivery
+// OpenRouter LLM Call via Secure Vercel Serverless Backend
 async function triggerMeherReply(userMessage) {
-  let apiKey = localStorage.getItem('openrouter_api_key');
-
-  if (!apiKey) {
-    setTyping(false);
-    appendMessage("Pehle Settings mein ja kar OpenRouter API key daalo na!", 'meher');
-    return;
-  }
-
-  // Extra spaces hatana
-  apiKey = apiKey.trim();
-
   setTyping(true);
   conversationHistory.push({ role: "user", content: userMessage });
 
   try {
-    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+    const response = await fetch("/api/chat", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-        "HTTP-Referer": window.location.href || "http://localhost",
-        "X-Title": "Meher Chat App"
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: "openrouter/auto",
-        messages: conversationHistory,
-        max_tokens: 120,
-        temperature: 0.85
+        messages: conversationHistory
       })
     });
 
     const data = await response.json();
 
-    if (data.choices && data.choices[0] && data.choices[0].message) {
-      const reply = data.choices[0].message.content.trim();
+    if (data && data.reply) {
+      const reply = data.reply.trim();
       conversationHistory.push({ role: "assistant", content: reply });
 
-      const delay = Math.min(Math.max(reply.length * 35, 1200), 2500);
+      const delay = Math.min(Math.max(reply.length * 35, 1200), 3000);
       setTimeout(() => {
         setTyping(false);
         appendMessage(reply, 'meher');
       }, delay);
-
     } else {
       setTyping(false);
-      const errDetail = data.error ? data.error.message : JSON.stringify(data);
-      alert("API Error: " + errDetail);
-      appendMessage("WiFi ajeeb chal raha hai mera hostel ka... dobara bolo?", 'meher');
+      appendMessage("WiFi ajeeb chal raha hai mera hostel ka... fir se bolo na!", 'meher');
     }
   } catch (error) {
     setTyping(false);
     console.error("API Error:", error);
-    alert("Network Error: " + error.message);
-    appendMessage("Yaar connection drop ho gaya mera, ek second ruko.", 'meher');
+    appendMessage("Yaar connection drop ho gaya mera, ek second baad text karna!", 'meher');
   }
-                  }
+}
 
 // Send Message Handlers
 function handleSendMessage() {
