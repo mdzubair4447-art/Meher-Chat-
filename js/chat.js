@@ -86,7 +86,7 @@ function loadInitialChatHooks() {
         <span style="font-size:11px;color:#8696a0;font-family:sans-serif;">0:14</span>
         <span style="font-size:9px;color:#8696a0;margin-top:2px;">${getCurrentTime()}</span>
       </div>
-                    <audio id="entryAudio" src="assets/meher_chat_intro.mp3"></audio>
+                    <audio id="entryAudio" src="meher_chat_intro.mp3"></audio>
     </div>
   `;
   chatContainer.appendChild(voiceRow);
