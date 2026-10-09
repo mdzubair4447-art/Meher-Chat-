@@ -1328,4 +1328,188 @@ img {
   fill: #ffffff;
   margin-left: 2px;
     }
+/* =======================================================
+   PHASE 2: 3-DOT ACTION SHEET & FUNCTIONAL MODALS
+   ======================================================= */
+
+/* 3-Dot Dropdown Menu */
+.insta-dropdown-menu {
+  position: fixed;
+  top: 52px;
+  right: 12px;
+  background-color: #1a1f24;
+  border: 1px solid #282f37;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
+  width: 175px;
+  z-index: 10005;
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+  animation: dropFadeIn 0.15s ease-out;
+}
+
+@keyframes dropFadeIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.dropdown-item-btn {
+  background: none;
+  border: none;
+  color: #e4e6eb;
+  padding: 11px 16px;
+  text-align: left;
+  font-size: 13.5px;
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid #222930;
+  transition: background 0.15s ease;
+}
+
+.dropdown-item-btn:last-child {
+  border-bottom: none;
+}
+
+.dropdown-item-btn:active {
+  background-color: #28313a;
+}
+
+.dropdown-item-btn.danger-text {
+  color: #ed4956;
+}
+
+/* Common Modal Backdrop Overlay */
+.phase2-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  z-index: 10010;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* Modal Core Container */
+.phase2-dialog-card {
+  background-color: #1a1f24;
+  border: 1px solid #282f37;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 330px;
+  padding: 20px;
+  box-sizing: border-box;
+  color: #f0f2f5;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
+  animation: zoomDialog 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes zoomDialog {
+  from { opacity: 0; transform: scale(0.94); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.dialog-header-title {
+  font-size: 17px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #f5f5f5;
+}
+
+/* Talk Time Card Styles */
+.quota-metric-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #121519;
+  padding: 10px 14px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #222830;
+}
+
+.metric-label-text {
+  font-size: 13.5px;
+  color: #c4c9d0;
+}
+
+.metric-value-pill {
+  font-size: 12px;
+  font-weight: 600;
+  background-color: #00a884;
+  color: #0b141a;
+  padding: 2px 8px;
+  border-radius: 12px;
+}
+
+.quota-reset-note {
+  font-size: 11px;
+  color: #727a82;
+  text-align: center;
+  margin-top: 10px;
+}
+
+/* Report Modal Option List */
+.report-reason-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 14px 0;
+}
+
+.report-option-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: #121519;
+  padding: 9px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  color: #d1d5db;
+  border: 1px solid #222830;
+}
+
+.report-option-item input[type="radio"] {
+  accent-color: #0095f6;
+}
+
+/* Dialog Action Buttons */
+.dialog-btn-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.dialog-action-btn {
+  flex: 1;
+  padding: 9px 0;
+  border-radius: 8px;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+}
+
+.dialog-btn-cancel {
+  background-color: #262e36;
+  color: #d1d5db;
+}
+
+.dialog-btn-primary {
+  background-color: #0095f6;
+  color: #ffffff;
+}
+
+.dialog-btn-danger {
+  background-color: #ed4956;
+  color: #ffffff;
+  }
 
