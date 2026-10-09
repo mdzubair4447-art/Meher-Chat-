@@ -722,4 +722,26 @@ body, html {
   justify-content: center;
   box-shadow: 0 6px 18px rgba(255, 59, 48, 0.4);
 }
+/* ==========================================
+   ANTI-THEFT / ANTI-SAVE PROTECTION
+   ========================================== */
+* {
+  -webkit-touch-callout: none !important;
+  -webkit-user-select: none !important;
+  user-select: none !important;
+}
+
+/* User typing box ko readable rakhna */
+input, textarea {
+  -webkit-touch-callout: default !important;
+  -webkit-user-select: text !important;
+  user-select: text !important;
+}
+
+/* Images lock (Download aur Drag block) */
+img {
+  pointer-events: none !important;
+  -webkit-user-drag: none !important;
+  user-select: none !important;
+    }
 
