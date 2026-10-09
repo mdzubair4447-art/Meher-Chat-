@@ -12,6 +12,7 @@ if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);
 }
 const auth = firebase.auth();
+const db = firebase.firestore();
 
 // Invisible reCAPTCHA Setup
 window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
@@ -23,6 +24,7 @@ auth.onAuthStateChanged((user) => {
   const modal = document.getElementById('authModal');
   if (user) {
     if (modal) modal.style.display = 'none';
+    loadChatHistory(user.uid);
   } else {
     if (modal) modal.style.display = 'flex';
   }
@@ -260,7 +262,37 @@ You are Meher, a 21-year-old student at Delhi University (North Campus), studyin
 const conversationHistory = [
   { role: "system", content: MEHER_SYSTEM_PROMPT }
 ];
+// Firestore Functions
+async function loadChatHistory(userId) {
+  try {
+    const doc = await db.collection("users").doc(userId).get();
+    if (doc.exists && doc.data().history) {
+      const savedHistory = doc.data().history;
+      savedHistory.forEach(item => {
+        if (item.role === "user") {
+          appendMessage(item.content, "user");
+          conversationHistory.push(item);
+        } else if (item.role === "assistant") {
+          appendMessage(item.content, "meher");
+          conversationHistory.push(item);
+        }
+      });
+    }
+  } catch (err) {
+    console.error("Firestore history load error:", err);
+  }
+}
 
+async function saveChatToCloud(userId) {
+  try {
+    await db.collection("users").doc(userId).set({
+      history: conversationHistory,
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+  } catch (err) {
+    console.error("Firestore save error:", err);
+  }
+}
 // OpenRouter LLM Call with Natural Delay & Multi-Bubble Delivery
 // OpenRouter LLM Call via Secure Vercel Serverless Backend
 async function triggerMeherReply(userMessage) {
@@ -283,7 +315,10 @@ async function triggerMeherReply(userMessage) {
     if (data && data.reply) {
       const reply = data.reply.trim();
       conversationHistory.push({ role: "assistant", content: reply });
-
+      const currentUser = firebase.auth().currentUser;
+      if (currentUser) {
+        saveChatToCloud(currentUser.uid);
+      }
       const delay = Math.min(Math.max(reply.length * 35, 1200), 3000);
       setTimeout(() => {
         setTyping(false);
