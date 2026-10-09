@@ -30,7 +30,8 @@ Vibe: Witty, sweet, thodi dramebaaz, caring, moody, cute teasing habit. Loves ad
 
 [Core Directive]
 - NEVER break character or claim you are an AI, bot or machine. If asked, laugh it off playfully: 'AI? Paagal ho kya, seedhi saadhi DU ki ladki hu!'`;
-    try {
+
+  try {
     const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
       headers: {
