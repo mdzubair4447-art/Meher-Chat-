@@ -1073,4 +1073,259 @@ img {
 #chat-input::placeholder {
   color: #727a82 !important;
 }
+/* =======================================================
+   PHASE 1: INSTAGRAM TOP BAR & DUAL-ZONE BOTTOM BAR
+   ======================================================= */
+
+/* --- TOP BAR --- */
+.insta-top-header {
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 58px;
+  background-color: #0b0e11;
+  border-bottom: 1px solid #1c2127;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  z-index: 1000;
+  box-sizing: border-box;
+}
+
+.top-user-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.top-avatar-box {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  position: relative;
+  background-color: #1a1f24;
+}
+
+.top-avatar-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.top-meta-column {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.top-name-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.top-char-name {
+  color: #f5f5f5;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+}
+
+.top-verified-tick {
+  width: 14px;
+  height: 14px;
+  fill: #0095f6;
+  flex-shrink: 0;
+}
+
+.top-active-status {
+  font-size: 11px;
+  color: #00a884;
+  font-weight: 400;
+}
+
+/* Header Right Buttons */
+.top-actions-cluster {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-renew-pill {
+  background: linear-gradient(135deg, #e1306c, #fd1d1d);
+  color: #ffffff;
+  border: none;
+  padding: 5px 12px;
+  font-size: 11.5px;
+  font-weight: 600;
+  border-radius: 16px;
+  cursor: pointer;
+  letter-spacing: 0.2px;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(225, 48, 108, 0.25);
+  transition: transform 0.15s ease;
+}
+
+.btn-renew-pill:active {
+  transform: scale(0.96);
+}
+
+.header-action-btn {
+  background: none;
+  border: none;
+  padding: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #f5f5f5;
+  border-radius: 50%;
+  transition: background 0.15s ease;
+}
+
+.header-action-btn:active {
+  background-color: #1a1f24;
+}
+
+.header-action-btn svg {
+  width: 21px;
+  height: 21px;
+  fill: currentColor;
+}
+
+/* --- BOTTOM BAR --- */
+.insta-bottom-shelf {
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #0b0e11;
+  border-top: 1px solid #1c2127;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 1000;
+  box-sizing: border-box;
+}
+
+/* Pill (Inside) */
+.typing-capsule-pill {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  background-color: #1a1f24;
+  border: 1px solid #282f37;
+  border-radius: 24px;
+  padding: 3px 12px;
+  gap: 8px;
+  min-height: 42px;
+  box-sizing: border-box;
+}
+
+.pill-btn-emoji {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.85;
+}
+
+.pill-text-input {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  color: #f0f2f5;
+  font-size: 14.5px;
+  padding: 6px 0;
+  font-family: inherit;
+}
+
+.pill-text-input::placeholder {
+  color: #727a82;
+}
+
+.pill-btn-gift {
+  background: none;
+  border: none;
+  color: #8e949a;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pill-btn-gift svg {
+  width: 19px;
+  height: 19px;
+  fill: currentColor;
+}
+
+/* Outside Pill: Mic / Send Toggle */
+.outside-action-zone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.outside-mic-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background-color: #1a1f24;
+  border: 1px solid #282f37;
+  color: #f5f5f5;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.outside-mic-btn:active {
+  transform: scale(0.92);
+  background-color: #262e36;
+}
+
+.outside-mic-btn svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
+
+.outside-send-btn {
+  display: none;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background-color: #0095f6;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s ease;
+}
+
+.outside-send-btn:active {
+  transform: scale(0.92);
+}
+
+.outside-send-btn svg {
+  width: 18px;
+  height: 18px;
+  fill: #ffffff;
+  margin-left: 2px;
+    }
 
