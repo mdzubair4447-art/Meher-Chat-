@@ -900,4 +900,32 @@ const drawerObserver = new MutationObserver(function() {
   enforceDrawerSecurity();
 });
 drawerObserver.observe(document.body, { childList: true, subtree: true });
+// ==========================================
+// FRONT & PROFILE DRAWER MEDIA LOCK
+// ==========================================
+function enforceDrawerSecurity() {
+  const profileDrawer = document.querySelector('.profile-drawer') || document.querySelector('.profile-modal');
+  if (!profileDrawer) return;
+
+  // Drawer ke andar saari images par right click & context menu block
+  profileDrawer.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+    return false;
+  }, true);
+
+  // Touch hold / long press block
+  profileDrawer.addEventListener('touchstart', function(e) {
+    if (e.target.tagName === 'IMG') {
+      e.target.style.webkitUserSelect = 'none';
+      e.target.style.webkitTouchCallout = 'none';
+    }
+  }, { passive: true });
+}
+
+window.addEventListener('DOMContentLoaded', enforceDrawerSecurity);
+// Agar drawer dynamically render hota hai toh observer se catch karein
+const drawerObserver = new MutationObserver(function() {
+  enforceDrawerSecurity();
+});
+drawerObserver.observe(document.body, { childList: true, subtree: true });
 
