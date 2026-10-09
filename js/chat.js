@@ -362,7 +362,29 @@ document.addEventListener('dragstart', function(e) {
       triggerShield(false);
     }
   });
+// ==========================================
+// E2EE ENCRYPTED BANNER INITIALIZER
+// ==========================================
+function renderE2EEBanner() {
+  const chatMessages = document.getElementById('chat-messages');
+  if (chatMessages && !document.getElementById('e2ee-banner-node')) {
+    const banner = document.createElement('div');
+    banner.id = 'e2ee-banner-node';
+    banner.className = 'e2ee-lock-banner';
+    banner.innerHTML = `<span>🔒</span><span>Messages and calls are end-to-end encrypted. No one outside of this chat can read them.</span>`;
+    
+    // Sabse top par insert karna
+    chatMessages.insertBefore(banner, chatMessages.firstChild);
+  }
+}
 
+// Window load hote hi banner ensure karein
+window.addEventListener('DOMContentLoaded', renderE2EEBanner);
+// Agar page pehle se load hai toh instant fire karein
+if (document.readyState === 'complete' || document.readyState === 'interactive') {
+  renderE2EEBanner();
+                                                              }
+  
   // Windows Snipping / Screenshot shortcuts detect
   window.addEventListener('keydown', function(e) {
     if (e.key === 'PrintScreen' || (e.ctrlKey && e.shiftKey && (e.key === 'S' || e.key === 's'))) {
