@@ -766,4 +766,27 @@ img {
 #privacy-blackout-shield span {
   display: block;
 }
+/* ==========================================
+   E2EE ENCRYPTION BADGE BANNER
+   ========================================== */
+.e2ee-lock-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: rgba(24, 34, 41, 0.85);
+  border: 1px solid rgba(255, 210, 121, 0.15);
+  border-radius: 8px;
+  padding: 8px 14px;
+  margin: 12px auto 16px auto;
+  width: 90%;
+  max-width: 320px;
+  color: #ffd279;
+  font-size: 11.5px;
+  line-height: 1.4;
+  text-align: center;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+  user-select: none;
+  pointer-events: none;
+}
 
