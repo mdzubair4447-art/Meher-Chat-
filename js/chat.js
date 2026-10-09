@@ -1637,3 +1637,10 @@ document.getElementById('logoutBtn')?.addEventListener('click', async () => {
     }
   }
 });
+// Logout Click Handler
+document.getElementById('logoutBtn')?.addEventListener('click', async () => {
+  if (confirm("Logout karna chahte hain?")) {
+    await auth.signOut();
+    window.location.reload();
+  }
+});
