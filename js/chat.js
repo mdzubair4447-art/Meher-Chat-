@@ -288,6 +288,10 @@ async function loadChatHistory(userId) {
           conversationHistory.push(item);
         }
       });
+            const container = document.querySelector('.chat-container') || document.getElementById('chatMessages') || chatContainer;
+      if (container) {
+        container.scrollTop = container.scrollHeight;
+      }
     }
   } catch (err) {
     console.error("Firestore history load error:", err);
