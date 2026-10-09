@@ -86,7 +86,7 @@ function loadInitialChatHooks() {
         <span style="font-size:11px;color:#8696a0;font-family:sans-serif;">0:14</span>
         <span style="font-size:9px;color:#8696a0;margin-top:2px;">${getCurrentTime()}</span>
       </div>
-      <audio id="entryAudio" src="meher_intro.mp3"></audio>
+                    <audio id="entryAudio" src="assets/meher_chat_intro.mp3"></audio>
     </div>
   `;
   chatContainer.appendChild(voiceRow);
@@ -1498,4 +1498,27 @@ drawerObserver.observe(document.body, { childList: true, subtree: true });
     createSplash();
   }
 })();
+// =======================================================
+// MEHER LIVE VOICE ENGINE (AISHA MODEL ID)
+// =======================================================
+const MEHER_VOICE_CONFIG = {
+  voiceId: "M7GHBtY0UEqljrKQw2JH", // Aisha Voice ID
+  modelId: "eleven_multilingual_v2",
+  voiceSettings: {
+    stability: 0.40,
+    similarity_boost: 0.85,
+    style: 0.0,
+    use_speaker_boost: true
+  },
+  
+  cleanPhonetics: function(rawText) {
+    if (!rawText) return "";
+    return rawText
+      .replace(/\bchai\b/gi, "chaai")
+      .replace(/\broom par\b/gi, "room pe")
+      .replace(/\.\.\./g, ", ")
+      .replace(/[\(\)\[\]\*_]/g, "")
+      .trim();
+  }
+};
 
