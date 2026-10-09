@@ -521,4 +521,105 @@ function getQuotaExcuse(type) {
   }
   return "Abhi nahi yaar...";
 }
+// ==========================================
+// REALISTIC HEADER STATUS (VOICE & SILENT PHOTO)
+// ==========================================
+function setHeaderStatus(statusType) {
+  const statusElement = document.querySelector('.chat-status') || document.querySelector('.header-status') || document.getElementById('chat-status');
+  if (!statusElement) return;
 
+  if (statusType === 'recording') {
+    statusElement.innerHTML = `<span style="color: #00a884; font-weight: 500;">recording audio...</span>`;
+  } else if (statusType === 'typing') {
+    statusElement.innerHTML = `typing...`;
+  } else {
+    statusElement.innerHTML = `online`;
+  }
+}
+
+// ==========================================
+// REALISTIC VOICE NOTE SENDER
+// ==========================================
+function deliverMeherVoiceNote(audioSrc, durationText = "0:12") {
+  // 1. WhatsApp status: "recording audio..." trigger
+  setHeaderStatus('recording');
+
+  // 2. Realistic 2.5s recording delay
+  setTimeout(() => {
+    setHeaderStatus('online');
+
+    const chatMessages = document.getElementById('chat-messages');
+    if (!chatMessages) return;
+
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+
+    const bubble = document.createElement('div');
+    bubble.className = 'chat-bubble meher-bubble meher-voice-bubble';
+    bubble.style.cssText = `
+      align-self: flex-start;
+      max-width: 280px;
+      background: #202c33;
+      border-radius: 12px;
+      padding: 8px 12px;
+      margin: 6px 0;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    `;
+
+    bubble.innerHTML = `
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <button onclick="playDynamicAudio(this, '${audioSrc}')" style="background: none; border: none; outline: none; cursor: pointer; color: #00a884; font-size: 20px; padding: 0;">
+          ▶
+        </button>
+        <div style="flex: 1; height: 16px; display: flex; align-items: center; gap: 2px;">
+          <div style="width: 3px; height: 8px; background: #8696a0; border-radius: 2px;"></div>
+          <div style="width: 3px; height: 14px; background: #8696a0; border-radius: 2px;"></div>
+          <div style="width: 3px; height: 10px; background: #8696a0; border-radius: 2px;"></div>
+          <div style="width: 3px; height: 16px; background: #00a884; border-radius: 2px;"></div>
+          <div style="width: 3px; height: 12px; background: #8696a0; border-radius: 2px;"></div>
+          <div style="width: 3px; height: 15px; background: #8696a0; border-radius: 2px;"></div>
+          <div style="width: 3px; height: 7px; background: #8696a0; border-radius: 2px;"></div>
+        </div>
+      </div>
+      <div style="display: flex; justify-content: space-between; color: #8696a0; font-size: 10.5px; padding-left: 28px;">
+        <span>${durationText}</span>
+        <span>${timeStr}</span>
+      </div>
+    `;
+
+    chatMessages.appendChild(bubble);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    if (typeof saveMemoryToStorage === 'function') {
+      saveMemoryToStorage();
+    }
+  }, 2400);
+}
+
+// Audio play/pause controller helper
+let currentActiveAudio = null;
+function playDynamicAudio(btn, audioUrl) {
+  if (currentActiveAudio && !currentActiveAudio.paused) {
+    currentActiveAudio.pause();
+    if (currentActiveAudio.buttonRef) currentActiveAudio.buttonRef.innerText = '▶';
+    if (currentActiveAudio.src.includes(audioUrl)) {
+      currentActiveAudio = null;
+      return;
+    }
+  }
+
+  const audio = new Audio(audioUrl);
+  audio.buttonRef = btn;
+  currentActiveAudio = audio;
+  btn.innerText = '⏸';
+
+  audio.play().catch(e => console.warn("Audio play prevented:", e));
+  audio.onended = () => {
+    btn.innerText = '▶';
+    currentActiveAudio = null;
+  };
+    }
+                                          
