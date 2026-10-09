@@ -464,4 +464,61 @@ window.addEventListener('DOMContentLoaded', () => {
 
 // Periodic auto-sync
 setInterval(saveMemoryToStorage, 2000);
+// ==========================================
+// DAILY MEDIA QUOTA ENGINE (5 VOICE / 3 IMAGE)
+// ==========================================
+const MEDIA_QUOTA_KEY = 'meher_daily_media_quota_v1';
+
+function getMediaQuota() {
+  const today = new Date().toISOString().slice(0, 10);
+  try {
+    const data = JSON.parse(localStorage.getItem(MEDIA_QUOTA_KEY) || '{}');
+    if (data.date === today) {
+      return data;
+    }
+  } catch (e) {}
+  // Default fresh quota for the day
+  return { date: today, voiceCount: 0, imageCount: 0 };
+}
+
+function updateMediaQuota(type) {
+  const quota = getMediaQuota();
+  if (type === 'voice') quota.voiceCount = (quota.voiceCount || 0) + 1;
+  if (type === 'image') quota.imageCount = (quota.imageCount || 0) + 1;
+  try {
+    localStorage.setItem(MEDIA_QUOTA_KEY, JSON.stringify(quota));
+  } catch (e) {}
+}
+
+function checkMediaQuota(type) {
+  const quota = getMediaQuota();
+  if (type === 'voice') {
+    return quota.voiceCount < 5;
+  }
+  if (type === 'image') {
+    return quota.imageCount < 3;
+  }
+  return true;
+}
+
+// Limit hit hone par natural Meher replies
+function getQuotaExcuse(type) {
+  if (type === 'voice') {
+    const voiceExcuses = [
+      "Arre yaar abhi roommate so rahi hai meri, voice sunke faltu mein tease karegi... abhi text pe bol na!",
+      "Hostel ka network dead ho rakha hai bilkul, audio upload hi nahi ho rahi. Thodi der text kar.",
+      "Gala baitha hua hai thoda itni loud music sunke canteen mein... abhi likh kar hi bata sakti hoon."
+    ];
+    return voiceExcuses[Math.floor(Math.random() * voiceExcuses.length)];
+  }
+  if (type === 'image') {
+    const imageExcuses = [
+      "Bas kar photoshoot chal raha hai kya yahan? Saari photos aaj hi dekh lega toh kal kya karega... chup chap baat kar!",
+      "Mess ke kapdon mein ajeeb lag rahi hoon abhi bilkul, koi photo nahi milne wali abhi.",
+      "Itna obsess mat ho meri shakal se haha, abhi camera kholne ka bilkul mann nahi hai."
+    ];
+    return imageExcuses[Math.floor(Math.random() * imageExcuses.length)];
+  }
+  return "Abhi nahi yaar...";
+}
 
