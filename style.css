@@ -948,4 +948,27 @@ img {
   80% { transform: scale(1.15); }
   100% { transform: scale(1); }
 }
+/* ==========================================
+   FRONT PAGE & PROFILE DRAWER SECURITY LOCK
+   ========================================== */
+.profile-drawer,
+.profile-modal,
+.grid-container,
+.profile-avatar-large,
+.grid-item img,
+.drawer-content img {
+  -webkit-touch-callout: none !important;
+  -webkit-user-select: none !important;
+  user-select: none !important;
+  pointer-events: none !important;
+  -webkit-user-drag: none !important;
+}
+
+/* Close button aur bio text selection ko clickable rakhna */
+.drawer-close,
+.profile-close-btn,
+.profile-action-btn {
+  pointer-events: auto !important;
+  cursor: pointer !important;
+}
 
