@@ -622,4 +622,103 @@ function playDynamicAudio(btn, audioUrl) {
     currentActiveAudio = null;
   };
     }
-                                          
+                         // ==========================================
+// CONTEXTUAL MEDIA ASSETS & TRIGGER PIPELINE
+// ==========================================
+
+// Consistent media assets (Aapke existing assets ka pool)
+const MEHER_MEDIA_POOL = {
+  images: [
+    { url: 'assets/meher_dp.png', caption: 'Hostel mess se abhi nikal rahi thi... ajeeb lag rahi hoon thoda 🤦‍♀️' },
+    { url: 'assets/post1.png', caption: 'Library ke bahar dhoop sekte hue haha' },
+    { url: 'assets/post2.png', caption: 'North campus canteen vibes... cold coffee was bad today' }
+  ],
+  voices: [
+    { url: 'assets/voice_note.mp3', duration: '0:14' },
+    { url: 'assets/voice_note.mp3', duration: '0:10' }
+  ]
+};
+
+let currentImgIndex = 0;
+let currentVoiceIndex = 0;
+
+// User message analyze karne ka main interceptor
+function handleMediaTriggers(userText) {
+  const text = userText.toLowerCase().trim();
+
+  // 1. Photo / Pic triggers match
+  const isImageRequest = /(photo|pic|picture|selfie|shakal|dikhna|dikhao|bhejo|bhejna)/i.test(text) &&
+                         !/(voice|audio|awaaz|bol|suna)/i.test(text);
+
+  // 2. Voice note triggers match
+  const isVoiceRequest = /(voice|audio|awaaz|bolke|bol kar|sunao|bolna|note)/i.test(text);
+
+  if (isImageRequest) {
+    if (checkMediaQuota('image')) {
+      updateMediaQuota('image');
+      const item = MEHER_MEDIA_POOL.images[currentImgIndex % MEHER_MEDIA_POOL.images.length];
+      currentImgIndex++;
+
+      // Silent natural delivery (No typing indicator)
+      setTimeout(() => {
+        deliverStealthImage(item.url, item.caption);
+      }, 1200);
+      return true;
+    } else {
+      // Limit reached -> Natural excuse
+      setTimeout(() => {
+        if (typeof renderMessage === 'function') {
+          renderMessage(getQuotaExcuse('image'), 'meher');
+        } else if (typeof appendMessage === 'function') {
+          appendMessage(getQuotaExcuse('image'), 'meher');
+        }
+      }, 1000);
+      return true;
+    }
+  }
+
+  if (isVoiceRequest) {
+    if (checkMediaQuota('voice')) {
+      updateMediaQuota('voice');
+      const item = MEHER_MEDIA_POOL.voices[currentVoiceIndex % MEHER_MEDIA_POOL.voices.length];
+      currentVoiceIndex++;
+
+      // Trigger "recording audio..." status & deliver
+      deliverMeherVoiceNote(item.url, item.duration);
+      return true;
+    } else {
+      // Limit reached -> Natural excuse
+      setTimeout(() => {
+        if (typeof renderMessage === 'function') {
+          renderMessage(getQuotaExcuse('voice'), 'meher');
+        } else if (typeof appendMessage === 'function') {
+          appendMessage(getQuotaExcuse('voice'), 'meher');
+        }
+      }, 1000);
+      return true;
+    }
+  }
+
+  return false; // Normal text message, allow standard pipeline
+}
+
+// Global user send listener hook
+document.addEventListener('DOMContentLoaded', () => {
+  const sendBtn = document.getElementById('send-btn') || document.querySelector('.send-button');
+  const chatInput = document.getElementById('chat-input') || document.querySelector('input[type="text"]');
+
+  if (sendBtn && chatInput) {
+    sendBtn.addEventListener('click', () => {
+      const val = chatInput.value;
+      if (val) handleMediaTriggers(val);
+    }, true);
+
+    chatInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        const val = chatInput.value;
+        if (val) handleMediaTriggers(val);
+      }
+    }, true);
+  }
+});
+
