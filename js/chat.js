@@ -209,7 +209,7 @@ async function triggerMeherReply(userMessage) {
         "X-Title": "Meher Chat App"
       },
       body: JSON.stringify({
-        model: "deepseek/deepseek-chat",
+        model: "meta-llama/llama-3.3-70b-instruct:free",
         messages: conversationHistory,
         max_tokens: 100,
         temperature: 0.85
