@@ -1040,4 +1040,174 @@ drawerObserver.observe(document.body, { childList: true, subtree: true });
     renderLayout();
   }
 })();
+// =======================================================
+// PHASE 2: 3-DOT MENU & FUNCTIONAL MODALS CONTROLLER
+// =======================================================
+(function setupPhase2Dropdown() {
+  function initModals() {
+    // 1. DROPDOWN MARKUP
+    const menuMarkup = `
+      <div class="insta-dropdown-menu" id="phase2-dropdown-menu">
+        <button class="dropdown-item-btn" id="item-profile">Profile</button>
+        <button class="dropdown-item-btn" id="item-setting">Setting</button>
+        <button class="dropdown-item-btn" id="item-talktime">Talk time</button>
+        <button class="dropdown-item-btn danger-text" id="item-report">Report</button>
+        <button class="dropdown-item-btn" id="item-clear-chat">Clear chat</button>
+      </div>
 
+      <!-- Talk Time Modal -->
+      <div class="phase2-modal-backdrop" id="modal-talktime-backdrop">
+        <div class="phase2-dialog-card">
+          <div class="dialog-header-title">Talk Time & Limits</div>
+          <div class="quota-metric-row">
+            <span class="metric-label-text">🎙️ Voice Notes</span>
+            <span class="metric-value-pill" id="val-voice-quota">5 / 5 Left</span>
+          </div>
+          <div class="quota-metric-row">
+            <span class="metric-label-text">📷 Media Photos</span>
+            <span class="metric-value-pill" id="val-photo-quota">3 / 3 Left</span>
+          </div>
+          <div class="quota-metric-row">
+            <span class="metric-label-text">💬 Text Messages</span>
+            <span class="metric-value-pill" style="background:#0095f6; color:#fff;">Unlimited</span>
+          </div>
+          <div class="quota-reset-note">Daily limits reset at 12:00 AM midnight.</div>
+          <div class="dialog-btn-row">
+            <button class="dialog-action-btn dialog-btn-primary" id="close-talktime-btn">Got it</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Report Modal -->
+      <div class="phase2-modal-backdrop" id="modal-report-backdrop">
+        <div class="phase2-dialog-card">
+          <div class="dialog-header-title">Report Meher</div>
+          <div style="font-size: 12.5px; color: #8e949a;">Help us understand what's happening:</div>
+          <div class="report-reason-list">
+            <label class="report-option-item">
+              <input type="radio" name="report_reason" checked value="harassment"> Harassment or bullying
+            </label>
+            <label class="report-option-item">
+              <input type="radio" name="report_reason" value="inappropriate"> Inappropriate conversation
+            </label>
+            <label class="report-option-item">
+              <input type="radio" name="report_reason" value="spam"> Spam or misleading
+            </label>
+            <label class="report-option-item">
+              <input type="radio" name="report_reason" value="other"> Something else
+            </label>
+          </div>
+          <div class="dialog-btn-row">
+            <button class="dialog-action-btn dialog-btn-cancel" id="cancel-report-btn">Cancel</button>
+            <button class="dialog-action-btn dialog-btn-danger" id="submit-report-btn">Submit Report</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Clear Chat Modal -->
+      <div class="phase2-modal-backdrop" id="modal-clearchat-backdrop">
+        <div class="phase2-dialog-card">
+          <div class="dialog-header-title">Clear this chat?</div>
+          <div style="font-size: 13px; color: #8e949a; line-height: 1.4;">
+            This will permanently delete your conversation history with Meher from this device.
+          </div>
+          <div class="dialog-btn-row">
+            <button class="dialog-action-btn dialog-btn-cancel" id="cancel-clear-btn">Cancel</button>
+            <button class="dialog-action-btn dialog-btn-danger" id="confirm-clear-btn">Clear All</button>
+          </div>
+        </div>
+      </div>
+    `;
+
+    document.body.insertAdjacentHTML('beforeend', menuMarkup);
+    bindDropdownEvents();
+  }
+
+  function bindDropdownEvents() {
+    const triggerBtn = document.getElementById('three-dots-btn');
+    const menuSheet = document.getElementById('phase2-dropdown-menu');
+
+    // Modals
+    const modalTalkTime = document.getElementById('modal-talktime-backdrop');
+    const modalReport = document.getElementById('modal-report-backdrop');
+    const modalClear = document.getElementById('modal-clearchat-backdrop');
+
+    // 3-Dot Toggle
+    if (triggerBtn && menuSheet) {
+      triggerBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        menuSheet.style.display = (menuSheet.style.display === 'flex') ? 'none' : 'flex';
+      });
+
+      document.addEventListener('click', function() {
+        if (menuSheet) menuSheet.style.display = 'none';
+      });
+    }
+
+    // 1. Profile action (Drawer trigger)
+    document.getElementById('item-profile')?.addEventListener('click', function() {
+      const existingDrawerTrigger = document.querySelector('.top-user-group') || document.querySelector('.profile-avatar');
+      if (typeof openProfileDrawer === 'function') {
+        openProfileDrawer();
+      } else if (existingDrawerTrigger) {
+        existingDrawerTrigger.click();
+      }
+    });
+
+    // 2. Setting action (Phase 3 se link hoga)
+    document.getElementById('item-setting')?.addEventListener('click', function() {
+      const settingPage = document.getElementById('phase3-settings-page');
+      if (settingPage) {
+        settingPage.style.display = 'flex';
+      } else {
+        alert("Opening Settings...");
+      }
+    });
+
+    // 3. Talk Time action
+    document.getElementById('item-talktime')?.addEventListener('click', function() {
+      // Sync real quotas if available
+      const voiceQuota = localStorage.getItem('meher_voice_quota') || '5';
+      const photoQuota = localStorage.getItem('meher_photo_quota') || '3';
+      const valVoice = document.getElementById('val-voice-quota');
+      const valPhoto = document.getElementById('val-photo-quota');
+      if (valVoice) valVoice.innerText = `${voiceQuota} / 5 Left`;
+      if (valPhoto) valPhoto.innerText = `${photoQuota} / 3 Left`;
+
+      modalTalkTime.style.display = 'flex';
+    });
+    document.getElementById('close-talktime-btn')?.addEventListener('click', () => modalTalkTime.style.display = 'none');
+
+    // 4. Report action
+    document.getElementById('item-report')?.addEventListener('click', function() {
+      modalReport.style.display = 'flex';
+    });
+    document.getElementById('cancel-report-btn')?.addEventListener('click', () => modalReport.style.display = 'none');
+    document.getElementById('submit-report-btn')?.addEventListener('click', function() {
+      modalReport.style.display = 'none';
+      setTimeout(() => {
+        alert("Thank you. We take safety seriously and our moderation team will review this interaction.");
+      }, 200);
+    });
+
+    // 5. Clear chat action
+    document.getElementById('item-clear-chat')?.addEventListener('click', function() {
+      modalClear.style.display = 'flex';
+    });
+    document.getElementById('cancel-clear-btn')?.addEventListener('click', () => modalClear.style.display = 'none');
+    document.getElementById('confirm-clear-btn')?.addEventListener('click', function() {
+      modalClear.style.display = 'none';
+      const msgArea = document.getElementById('chat-messages');
+      if (msgArea) msgArea.innerHTML = '';
+      localStorage.removeItem('meher_chat_history');
+      location.reload();
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initModals);
+  } else {
+    initModals();
+  }
+})();
+    
