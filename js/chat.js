@@ -130,11 +130,22 @@ function getCurrentTime() {
 
 // Typing Indicator Control
 function setTyping(isTyping) {
+  const container = document.querySelector('.chat-container') || document.getElementById('chatMessages') || chatContainer;
+  let indicator = document.getElementById('typingIndicator');
+
   if (isTyping) {
-    typingIndicator.style.display = 'flex';
-    chatContainer.scrollTop = chatContainer.scrollHeight;
+    if (!indicator && container) {
+      indicator = document.createElement('div');
+      indicator.id = 'typingIndicator';
+      indicator.className = 'typing-bubble';
+      indicator.innerHTML = '<span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>';
+      container.appendChild(indicator);
+      container.scrollTop = container.scrollHeight;
+    }
   } else {
-    typingIndicator.style.display = 'none';
+    if (indicator) {
+      indicator.remove();
+    }
   }
 }
 
