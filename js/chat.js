@@ -1626,4 +1626,14 @@ const MEHER_VOICE_CONFIG = {
       .trim();
   }
 };
-
+// Logout Handler
+document.getElementById('logoutBtn')?.addEventListener('click', async () => {
+  if (confirm("Kya aap Meher se logout karna chahte hain?")) {
+    try {
+      await auth.signOut();
+      window.location.reload();
+    } catch (err) {
+      console.error("Logout error:", err);
+    }
+  }
+});
