@@ -744,4 +744,26 @@ img {
   -webkit-user-drag: none !important;
   user-select: none !important;
     }
+/* ==========================================
+   ANTI-SCREENSHOT & PRIVACY BLACKOUT SHIELD
+   ========================================== */
+#privacy-blackout-shield {
+  position: fixed;
+  inset: 0;
+  background-color: #0b141a !important;
+  z-index: 999999 !important;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #8696a0;
+  font-size: 14px;
+  font-family: inherit;
+  text-align: center;
+  padding: 20px;
+}
+
+#privacy-blackout-shield span {
+  display: block;
+}
 
