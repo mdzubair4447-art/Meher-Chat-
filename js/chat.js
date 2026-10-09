@@ -188,13 +188,16 @@ const conversationHistory = [
 
 // OpenRouter LLM Call with Natural Delay & Multi-Bubble Delivery
 async function triggerMeherReply(userMessage) {
-  const apiKey = localStorage.getItem('openrouter_api_key');
+  let apiKey = localStorage.getItem('openrouter_api_key');
 
   if (!apiKey) {
     setTyping(false);
     appendMessage("Pehle Settings mein ja kar OpenRouter API key daalo na!", 'meher');
     return;
   }
+
+  // Extra spaces hatana
+  apiKey = apiKey.trim();
 
   setTyping(true);
   conversationHistory.push({ role: "user", content: userMessage });
@@ -211,19 +214,18 @@ async function triggerMeherReply(userMessage) {
       body: JSON.stringify({
         model: "meta-llama/llama-3.3-70b-instruct:free",
         messages: conversationHistory,
-        max_tokens: 100,
+        max_tokens: 120,
         temperature: 0.85
       })
     });
 
     const data = await response.json();
 
-    if (data.choices && data.choices[0]) {
+    if (data.choices && data.choices[0] && data.choices[0].message) {
       const reply = data.choices[0].message.content.trim();
       conversationHistory.push({ role: "assistant", content: reply });
 
-      // Realistic typing delay: 1.5s - 2.5s
-      const delay = Math.min(Math.max(reply.length * 35, 1500), 2800);
+      const delay = Math.min(Math.max(reply.length * 35, 1200), 2500);
       setTimeout(() => {
         setTyping(false);
         appendMessage(reply, 'meher');
@@ -231,14 +233,17 @@ async function triggerMeherReply(userMessage) {
 
     } else {
       setTyping(false);
+      const errDetail = data.error ? data.error.message : JSON.stringify(data);
+      alert("API Error: " + errDetail);
       appendMessage("WiFi ajeeb chal raha hai mera hostel ka... dobara bolo?", 'meher');
     }
   } catch (error) {
     setTyping(false);
     console.error("API Error:", error);
+    alert("Network Error: " + error.message);
     appendMessage("Yaar connection drop ho gaya mera, ek second ruko.", 'meher');
   }
-}
+                  }
 
 // Send Message Handlers
 function handleSendMessage() {
