@@ -789,4 +789,123 @@ img {
   user-select: none;
   pointer-events: none;
 }
+/* ==========================================
+   WHATSAPP CALLING SCREEN OVERLAY
+   ========================================== */
+#whatsapp-call-overlay {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at center, #1f2c34 0%, #0b141a 100%);
+  z-index: 99999;
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 60px 24px 50px 24px;
+  box-sizing: border-box;
+}
+
+.call-user-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.call-avatar {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+}
+
+.call-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.call-name {
+  color: #e9edef;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+.call-status-label {
+  color: #8696a0;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.call-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.btn-end-call {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: #ea4335;
+  border: none;
+  outline: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(234, 67, 53, 0.4);
+  transition: transform 0.15s ease;
+}
+
+.btn-end-call:active {
+  transform: scale(0.9);
+}
+
+.btn-end-call svg {
+  width: 28px;
+  height: 28px;
+  fill: #ffffff;
+  transform: rotate(135deg);
+}
+
+/* Missed Call Bubble inside Chat */
+.missed-call-bubble {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #202c33;
+  padding: 8px 14px;
+  border-radius: 10px;
+  max-width: 250px;
+  margin: 6px 0;
+  align-self: flex-start;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.missed-call-icon {
+  width: 22px;
+  height: 22px;
+  fill: #ea4335;
+}
+
+.missed-call-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.missed-call-title {
+  color: #e9edef;
+  font-size: 13.5px;
+  font-weight: 500;
+}
+
+.missed-call-sub {
+  color: #8696a0;
+  font-size: 11px;
+  }
 
