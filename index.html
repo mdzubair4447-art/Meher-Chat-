@@ -8,6 +8,9 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="icon" type="image/svg+xml" href="icon.svg">
   <link rel="apple-touch-icon" href="icon.svg">
+    <!-- Firebase App & Auth SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
 </head>
 <body>
   <div class="app-container">
@@ -285,6 +288,30 @@
       }
     });
   </script>
+    <!-- PHONE AUTH MODAL -->
+  <div id="authModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); z-index: 9999; align-items: center; justify-content: center; padding: 20px;">
+    <div style="background: #111113; border: 1px solid #27272a; border-radius: 20px; padding: 24px; width: 100%; max-width: 360px; text-align: center; color: #fff; box-shadow: 0 20px 40px rgba(0,0,0,0.6);">
+      <div style="font-size: 28px; margin-bottom: 8px;">✨</div>
+      <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 6px;">Meher se judne ke liye</h3>
+      <p style="font-size: 13px; color: #a1a1aa; margin-bottom: 20px; line-height: 1.4;">Apna number verify karo taaki tumhari baatein aur yaadein safe rahein.</p>
+      
+      <!-- Step 1: Phone Input -->
+      <div id="phoneInputStep">
+        <div style="display: flex; gap: 8px; background: #1c1c1f; border: 1px solid #3f3f46; border-radius: 12px; padding: 10px 14px; margin-bottom: 16px; align-items: center;">
+          <span style="color: #a1a1aa; font-weight: 500;">+91</span>
+          <input type="tel" id="userPhone" placeholder="Mobile Number" maxlength="10" style="background: transparent; border: none; outline: none; color: #fff; width: 100%; font-size: 15px;">
+        </div>
+        <div id="recaptcha-container" style="margin-bottom: 12px;"></div>
+        <button id="sendOtpBtn" style="width: 100%; background: linear-gradient(135deg, #f43f5e, #ec4899); color: white; border: none; padding: 12px; border-radius: 12px; font-weight: 600; cursor: pointer;">OTP Bhejo</button>
+      </div>
+
+      <!-- Step 2: OTP Input -->
+      <div id="otpInputStep" style="display: none;">
+        <input type="text" id="otpCode" placeholder="6-digit OTP" maxlength="6" style="width: 100%; text-align: center; letter-spacing: 6px; font-size: 18px; padding: 12px; background: #1c1c1f; border: 1px solid #3f3f46; border-radius: 12px; color: #fff; outline: none; margin-bottom: 16px;">
+        <button id="verifyOtpBtn" style="width: 100%; background: linear-gradient(135deg, #f43f5e, #ec4899); color: white; border: none; padding: 12px; border-radius: 12px; font-weight: 600; cursor: pointer;">Verify & Enter</button>
+      </div>
+    </div>
+  </div>
 </body>
   </html>
 
