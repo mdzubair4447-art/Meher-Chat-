@@ -326,4 +326,49 @@ document.addEventListener('dragstart', function(e) {
     return false;
   }
 });
+// ==========================================
+// AGGRESSIVE PRIVACY BLACKOUT SHIELD
+// ==========================================
+(function initPrivacyShield() {
+  let shield = document.getElementById('privacy-blackout-shield');
+  if (!shield) {
+    shield = document.createElement('div');
+    shield.id = 'privacy-blackout-shield';
+    shield.innerHTML = `
+      <div style="background: rgba(255,255,255,0.05); padding: 24px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); max-width: 280px;">
+        <span style="font-size: 36px; margin-bottom: 12px;">🛡️</span>
+        <span style="color: #e9edef; font-weight: 600; font-size: 16px; margin-bottom: 6px;">Protected Content</span>
+        <span style="color: #8696a0; font-size: 12px; line-height: 1.4;">Screen capture and recording are disabled for Meher's privacy.</span>
+      </div>
+    `;
+    document.body.appendChild(shield);
+  }
 
+  function triggerShield(show) {
+    if (shield) {
+      shield.style.display = show ? 'flex' : 'none';
+    }
+  }
+
+  // Window blur / Tab switch / App minimize par screen blackout
+  window.addEventListener('blur', function() { triggerShield(true); });
+  window.addEventListener('focus', function() { triggerShield(false); });
+
+  // Tab hidden / Visibility change trap
+  document.addEventListener('visibilitychange', function() {
+    if (document.hidden) {
+      triggerShield(true);
+    } else {
+      triggerShield(false);
+    }
+  });
+
+  // Windows Snipping / Screenshot shortcuts detect
+  window.addEventListener('keydown', function(e) {
+    if (e.key === 'PrintScreen' || (e.ctrlKey && e.shiftKey && (e.key === 'S' || e.key === 's'))) {
+      triggerShield(true);
+      setTimeout(function() { triggerShield(false); }, 2000);
+    }
+  });
+})();
+ 
