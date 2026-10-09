@@ -1,3 +1,78 @@
+// --- Firebase Config & Phone Auth Setup ---
+const firebaseConfig = {
+  apiKey: "AIzaSyBVGQhC_iYfANiGH9w1PpZrgke",
+  authDomain: "meher-companion.firebaseapp.com",
+  projectId: "meher-companion",
+  storageBucket: "meher-companion.firebasestorage.app",
+  messagingSenderId: "79635231401",
+  appId: "1:79635231401:web:cbc7538341d6718d0ba96c"
+};
+
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
+const auth = firebase.auth();
+
+// Invisible reCAPTCHA Setup
+window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+  'size': 'invisible'
+});
+
+// Check Login Status
+auth.onAuthStateChanged((user) => {
+  const modal = document.getElementById('authModal');
+  if (user) {
+    if (modal) modal.style.display = 'none';
+  } else {
+    if (modal) modal.style.display = 'flex';
+  }
+});
+
+// Send OTP Trigger
+document.getElementById('sendOtpBtn')?.addEventListener('click', () => {
+  const phoneInput = document.getElementById('userPhone');
+  const phone = phoneInput ? phoneInput.value.trim() : '';
+  if (phone.length !== 10) {
+    alert('Kripya valid 10-digit mobile number enter karein.');
+    return;
+  }
+  const fullPhone = '+91' + phone;
+  const appVerifier = window.recaptchaVerifier;
+
+  auth.signInWithPhoneNumber(fullPhone, appVerifier)
+    .then((confirmationResult) => {
+      window.confirmationResult = confirmationResult;
+      document.getElementById('phoneInputStep').style.display = 'none';
+      document.getElementById('otpInputStep').style.display = 'block';
+    })
+    .catch((error) => {
+      alert('OTP bhejne mein dikkat aayi: ' + error.message);
+      if (window.recaptchaVerifier) {
+        window.recaptchaVerifier.render();
+      }
+    });
+});
+
+// Verify OTP Trigger
+document.getElementById('verifyOtpBtn')?.addEventListener('click', () => {
+  const otpInput = document.getElementById('otpCode');
+  const code = otpInput ? otpInput.value.trim() : '';
+  if (code.length !== 6) {
+    alert('Kripya 6-digit OTP enter karein.');
+    return;
+  }
+
+  if (window.confirmationResult) {
+    window.confirmationResult.confirm(code)
+      .then(() => {
+        document.getElementById('authModal').style.display = 'none';
+      })
+      .catch((error) => {
+        alert('Galat OTP ya expire ho gaya: ' + error.message);
+      });
+  }
+});
+// ------------------------------------------
 // Chat DOM Elements
 const chatContainer = document.getElementById('chatContainer');
 const messageInput = document.getElementById('messageInput');
