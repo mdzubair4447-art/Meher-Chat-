@@ -212,7 +212,7 @@ async function triggerMeherReply(userMessage) {
         "X-Title": "Meher Chat App"
       },
       body: JSON.stringify({
-        model: "mistralai/mistral-7b-instruct:free",
+        model: "openrouter/auto",
         messages: conversationHistory,
         max_tokens: 120,
         temperature: 0.85
