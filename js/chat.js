@@ -928,4 +928,116 @@ const drawerObserver = new MutationObserver(function() {
   enforceDrawerSecurity();
 });
 drawerObserver.observe(document.body, { childList: true, subtree: true });
+// =======================================================
+// PHASE 1: TOP BAR & DUAL-ZONE BOTTOM BAR CONTROLLER
+// =======================================================
+(function mountPhase1Interface() {
+  function renderLayout() {
+    // 1. TOP BAR BUILD
+    const currentHeader = document.querySelector('header') || document.querySelector('.chat-header') || document.querySelector('.insta-top-bar');
+    const headerMarkup = `
+      <div class="insta-top-header" id="phase1-top-bar">
+        <div class="top-user-group" id="top-user-profile-btn">
+          <div class="top-avatar-box">
+            <img src="assets/meher_dp.png" alt="Meher">
+          </div>
+          <div class="top-meta-column">
+            <div class="top-name-wrapper">
+              <span class="top-char-name">Meher</span>
+              <svg class="top-verified-tick" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+            </div>
+            <span class="top-active-status" id="top-live-status">Active now</span>
+          </div>
+        </div>
+
+        <div class="top-actions-cluster">
+          <button class="btn-renew-pill" id="renew-plan-btn">Renew Plan</button>
+          <button class="header-action-btn" id="call-btn" title="Audio Call">
+            <svg viewBox="0 0 24 24"><path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56-.35-.12-.74-.03-1.01.24l-1.57 1.97c-2.83-1.35-5.43-3.9-6.63-6.82l1.97-1.57c.27-.27.35-.66.24-1.01-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19c-.54 0-.99.45-.99.99 0 9.39 7.61 17 17 17 .54 0 .99-.45.99-.99v-3.74c0-.54-.45-.99-.99-.99z"/></svg>
+          </button>
+          <button class="header-action-btn" id="three-dots-btn" title="More Options">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>
+          </button>
+        </div>
+      </div>
+    `;
+
+    if (currentHeader) {
+      currentHeader.outerHTML = headerMarkup;
+    } else {
+      document.body.insertAdjacentHTML('afterbegin', headerMarkup);
+    }
+
+    // 2. BOTTOM BAR BUILD
+    const currentFooter = document.querySelector('.chat-input-bar') || document.querySelector('.input-container') || document.querySelector('.insta-bottom-bar') || document.querySelector('footer');
+    const footerMarkup = `
+      <div class="insta-bottom-shelf" id="phase1-bottom-shelf">
+        <!-- Inside The Pill Container -->
+        <div class="typing-capsule-pill">
+          <button class="pill-btn-emoji" id="quick-emoji-btn" title="Emoji">😊</button>
+          <input type="text" class="pill-text-input" id="chat-input" placeholder="Message..." autocomplete="off">
+          <button class="pill-btn-gift" id="gift-card-btn" title="Send Gift">
+            <svg viewBox="0 0 24 24"><path d="M20 6h-2.18c.11-.31.18-.65.18-1 0-1.66-1.34-3-3-3-1.05 0-1.96.54-2.5 1.35l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5-2c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM9 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm11 15H4v-2h16v2zm0-5H4V8h5.08L7 10.83 8.62 12 11 8.76V14h2V8.76L15.38 12 17 10.83 14.92 8H20v6z"/></svg>
+          </button>
+        </div>
+
+        <!-- Outside The Pill (Mic / Send Switch) -->
+        <div class="outside-action-zone">
+          <button class="outside-mic-btn" id="outside-mic-trigger" title="Voice Note">
+            <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/></svg>
+          </button>
+          <button class="outside-send-btn" id="outside-send-trigger" title="Send">
+            <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+          </button>
+        </div>
+      </div>
+    `;
+
+    if (currentFooter) {
+      currentFooter.outerHTML = footerMarkup;
+    } else {
+      document.body.insertAdjacentHTML('beforeend', footerMarkup);
+    }
+
+    bindPhase1Interactions();
+  }
+
+  function bindPhase1Interactions() {
+    const inputField = document.getElementById('chat-input');
+    const micBtn = document.getElementById('outside-mic-trigger');
+    const sendBtn = document.getElementById('outside-send-trigger');
+
+    if (inputField && micBtn && sendBtn) {
+      inputField.addEventListener('input', function() {
+        if (inputField.value.trim().length > 0) {
+          micBtn.style.display = 'none';
+          sendBtn.style.display = 'flex';
+        } else {
+          micBtn.style.display = 'flex';
+          sendBtn.style.display = 'none';
+        }
+      });
+    }
+
+    // Emoji Button quick tap feedback
+    document.getElementById('quick-emoji-btn')?.addEventListener('click', function() {
+      if (inputField) {
+        inputField.value += ' ✨';
+        inputField.dispatchEvent(new Event('input'));
+        inputField.focus();
+      }
+    });
+
+    // Gift Card Tap
+    document.getElementById('gift-card-btn')?.addEventListener('click', function() {
+      alert("Gift Shop: Send a virtual rose, cold coffee, or token to Meher.");
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', renderLayout);
+  } else {
+    renderLayout();
+  }
+})();
 
