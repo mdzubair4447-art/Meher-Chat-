@@ -721,4 +721,110 @@ document.addEventListener('DOMContentLoaded', () => {
     }, true);
   }
 });
+// ==========================================
+// REALISTIC CALLING SCREEN ENGINE
+// ==========================================
+(function initCallingFeature() {
+  // 1. Overlay container DOM mein create karna
+  let callOverlay = document.getElementById('whatsapp-call-overlay');
+  if (!callOverlay) {
+    callOverlay = document.createElement('div');
+    callOverlay.id = 'whatsapp-call-overlay';
+    callOverlay.innerHTML = `
+      <div class="call-user-info">
+        <div class="call-avatar">
+          <img src="assets/meher_dp.png" alt="Meher">
+        </div>
+        <div class="call-name">Meher</div>
+        <div class="call-status-label" id="call-live-status">Calling...</div>
+      </div>
+      <div class="call-controls">
+        <button class="btn-end-call" id="end-call-trigger">
+          <svg viewBox="0 0 24 24"><path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56-.35-.12-.74-.03-1.01.24l-1.57 1.97c-2.83-1.35-5.43-3.9-6.63-6.82l1.97-1.57c.27-.27.35-.66.24-1.01-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19c-.54 0-.99.45-.99.99 0 9.39 7.61 17 17 17 .54 0 .99-.45.99-.99v-3.74c0-.54-.45-.99-.99-.99z"/></svg>
+        </button>
+      </div>
+    `;
+    document.body.appendChild(callOverlay);
+  }
+
+  let callTimer = null;
+  let statusTimer = null;
+
+  function endCall() {
+    clearTimeout(callTimer);
+    clearTimeout(statusTimer);
+    callOverlay.style.display = 'none';
+
+    // Missed Call Bubble inject karna
+    renderMissedCallBubble();
+
+    // 2.5s baad Meher ka natural text excuse
+    setTimeout(() => {
+      const excuses = [
+        "Arre abhi call mat kar na yaar, professor theek saamne khada hai... text pe bol kya hua!",
+        "Roommate so rahi hai uth jayegi faltu mein... phone mat mila, message kar.",
+        "Library mein baithi hoon loud ho jayega... text kar jaldi."
+      ];
+      const randomExcuse = excuses[Math.floor(Math.random() * excuses.length)];
+      if (typeof renderMessage === 'function') {
+        renderMessage(randomExcuse, 'meher');
+      } else if (typeof appendMessage === 'function') {
+        appendMessage(randomExcuse, 'meher');
+      }
+    }, 2400);
+  }
+
+  function startCallSimulation() {
+    const statusLabel = document.getElementById('call-live-status');
+    statusLabel.innerText = "Calling...";
+    callOverlay.style.display = 'flex';
+
+    // 2 sec baad "Ringing..."
+    statusTimer = setTimeout(() => {
+      statusLabel.innerText = "Ringing...";
+    }, 2000);
+
+    // 8 sec baad auto disconnect
+    callTimer = setTimeout(() => {
+      endCall();
+    }, 8500);
+  }
+
+  function renderMissedCallBubble() {
+    const chatMessages = document.getElementById('chat-messages');
+    if (!chatMessages) return;
+
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+
+    const bubble = document.createElement('div');
+    bubble.className = 'missed-call-bubble';
+    bubble.innerHTML = `
+      <svg class="missed-call-icon" viewBox="0 0 24 24"><path d="M19.59 7L12 14.59 6.41 9H11V7H3v8h2v-4.59l7 7 9-9z"/></svg>
+      <div class="missed-call-text">
+        <span class="missed-call-title">Missed voice call</span>
+        <span class="missed-call-sub">${timeStr}</span>
+      </div>
+    `;
+
+    chatMessages.appendChild(bubble);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    if (typeof saveMemoryToStorage === 'function') {
+      saveMemoryToStorage();
+    }
+  }
+
+  // End button listener
+  document.getElementById('end-call-trigger').addEventListener('click', endCall);
+
+  // Header call button ke sath attach karna
+  document.addEventListener('click', function(e) {
+    const callBtn = e.target.closest('#call-btn, .call-icon, [data-action="call"]');
+    if (callBtn) {
+      e.preventDefault();
+      startCallSimulation();
+    }
+  });
+})();
 
