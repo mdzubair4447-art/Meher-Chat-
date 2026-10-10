@@ -1862,3 +1862,51 @@ function checkAndShowIOSPrompt() {
 
 // Window load hone par check karein
 window.addEventListener("DOMContentLoaded", checkAndShowIOSPrompt);
+// ==========================================
+// New Chat & Session Archive Logic
+// ==========================================
+
+const newChatBtn = document.getElementById("new-chat-btn");
+
+if (newChatBtn) {
+  newChatBtn.addEventListener("click", async () => {
+    const confirmReset = confirm("Nayi chat shuru karni hai? Purani chat archive ho jayegi.");
+    if (!confirmReset) return;
+
+    try {
+      const currentUser = firebase.auth().currentUser;
+      
+      // 1. Purani chat Firestore ke archives folder me save karna
+      if (currentUser && conversationHistory.length > 0) {
+        await db.collection("users").doc(currentUser.uid).collection("archives").add({
+          messages: conversationHistory,
+          archivedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        // Current active messages clear karna
+        await db.collection("users").doc(currentUser.uid).collection("messages").get().then((snapshot) => {
+          snapshot.forEach((doc) => doc.ref.delete());
+        });
+      }
+
+      // 2. Local memory clean karna (lekin permanent facts bacha kar rakhna)
+      conversationHistory = [];
+      localStorage.removeItem("meher_chat_history");
+
+      // 3. Chat window visual clear karna
+      const chatMessages = document.getElementById("chat-messages") || document.querySelector(".chat-messages");
+      if (chatMessages) {
+        chatMessages.innerHTML = "";
+      }
+
+      // 4. Meher ka fresh conversation starter
+      if (typeof appendMessage === "function") {
+        appendMessage("assistant", "Hey! Nayi shuruwat? Batao, kya chal raha hai?");
+      }
+
+    } catch (err) {
+      console.error("Archive Error:", err);
+      alert("Chat reset karne me glitch aaya, page reload karein.");
+    }
+  });
+                                                                     }
