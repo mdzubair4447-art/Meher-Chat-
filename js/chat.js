@@ -335,6 +335,9 @@ const conversationHistory = [
 async function loadChatHistory(userId) {
   try {
     const doc = await db.collection("users").doc(userId).get();
+        if (doc.exists && doc.data().memory) {
+      localStorage.setItem("meher_user_memory", doc.data().memory);
+        }
     if (doc.exists && doc.data().history && doc.data().history.length > 0) {
       // Purani chat mil gayi: Screen ko clean karke sirf real chat load karo
       chatContainer.innerHTML = '';
@@ -384,8 +387,14 @@ async function triggerMeherReply(userMessage) {
   conversationHistory.push({ role: "user", content: userMessage });
 
   try {
+        const savedMemory = localStorage.getItem("meher_user_memory") || "";
+    const systemPromptWithMemory = {
+      role: "system",
+      content: `${conversationHistory[0].content}\n\n[USER MEMORY & KNOWN FACTS]:\n${savedMemory ? savedMemory : "No prior facts recorded yet."}`
+    };
+
     const contextPayload = [
-      conversationHistory[0], 
+      systemPromptWithMemory,
       ...conversationHistory.slice(1).slice(-12)
     ];
 
@@ -408,6 +417,16 @@ async function triggerMeherReply(userMessage) {
       const currentUser = firebase.auth().currentUser;
       if (currentUser) {
         saveChatToCloud(currentUser.uid);
+              // Auto-extract personal facts
+      const nameMatch = userMessage.match(/(?:mera naam|my name is|i am)\s+([a-zA-Z]+)/i);
+      if (nameMatch) {
+        const detectedName = nameMatch[1];
+        const updatedMemory = (localStorage.getItem("meher_user_memory") || "") + `\n- User's Name: ${detectedName}`;
+        localStorage.setItem("meher_user_memory", updatedMemory);
+        if (currentUser) {
+          db.collection("users").doc(currentUser.uid).set({ memory: updatedMemory }, { merge: true });
+        }
+      }
       }
 
       // Voice Reply: Screen par WhatsApp Voice Bubble dikhana
