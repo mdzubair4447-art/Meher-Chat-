@@ -50,42 +50,57 @@ Example: "Acha toh tum Delhi me rehte ho! <!-- MEMORY: Location=Delhi -->"${user
     ? messages.filter(m => m.role !== 'system').slice(-10)
     : [];
 
-  try {
-    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${apiKey.trim()}`,
-        "Content-Type": "application/json",
-        "HTTP-Referer": "https://meher-chat.vercel.app",
-        "X-Title": "Meher AI Chat"
-      },
-      body: JSON.stringify({
-        model: "openrouter/free",
-        messages: [
-          { role: "system", content: systemPrompt },
-          ...cleanMessages
-        ],
-        max_tokens: 180,
-        temperature: 0.85
-      })
-    });
+  // Step 2A: Priority Model Fallback Array
+  const models = [
+    "openrouter/free",
+    "meta-llama/llama-3.3-70b-instruct:free",
+    "mistralai/mistral-7b-instruct:free"
+  ];
 
-    const data = await response.json();
+  let replyText = null;
 
-    if (data.choices && data.choices[0]?.message?.content) {
-      return res.status(200).json({ reply: data.choices[0].message.content });
-    } else if (data.error) {
-      return res.status(200).json({ 
-        reply: "Arre thoda network slow chal raha hai mera, fir se bolo na ek baar!" 
+  for (const modelName of models) {
+    try {
+      const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${apiKey.trim()}`,
+          "Content-Type": "application/json",
+          "HTTP-Referer": "https://meher-chat.vercel.app",
+          "X-Title": "Meher AI Chat"
+        },
+        body: JSON.stringify({
+          model: modelName,
+          messages: [
+            { role: "system", content: systemPrompt },
+            ...cleanMessages
+          ],
+          max_tokens: 180,
+          temperature: 0.85
+        })
       });
-    } else {
-      return res.status(200).json({ 
-        reply: "Suno, awaz kat rahi hai tumhari... fir se text karo!" 
-      });
+
+      if (!response.ok) {
+        console.warn(`Model ${modelName} returned status ${response.status}. Trying next...`);
+        continue;
+      }
+
+      const data = await response.json();
+      if (data.choices && data.choices[0]?.message?.content) {
+        replyText = data.choices[0].message.content;
+        break; // Kamyab response milte hi loop band
+      }
+    } catch (modelErr) {
+      console.warn(`Fetch failed for ${modelName}:`, modelErr);
     }
-  } catch (error) {
-    return res.status(200).json({ 
-      reply: "Uff, internet glitch aa gaya lagta hai. Ek second baad message karo!" 
-    });
   }
+
+  if (replyText) {
+    return res.status(200).json({ reply: replyText });
+  }
+
+  // Agar teeno models temporarily down ho jayein
+  return res.status(200).json({ 
+    reply: "Arre thoda network slow chal raha hai mera, fir se bolo na ek baar!" 
+  });
 }
