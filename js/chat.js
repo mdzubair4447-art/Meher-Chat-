@@ -1866,7 +1866,7 @@ window.addEventListener("DOMContentLoaded", checkAndShowIOSPrompt);
 // New Chat & Session Archive Logic
 // ==========================================
 
-const newChatBtn = document.getElementById("new-chat-btn");
+const newChatBtn = document.getElementById("menuClearChat");
 
 if (newChatBtn) {
   newChatBtn.addEventListener("click", async () => {
@@ -1894,7 +1894,7 @@ if (newChatBtn) {
       localStorage.removeItem("meher_chat_history");
 
       // 3. Chat window visual clear karna
-      const chatMessages = document.getElementById("chat-messages") || document.querySelector(".chat-messages");
+      const chatMessages = document.getElementById("chatContainer");
       if (chatMessages) {
         chatMessages.innerHTML = "";
       }
@@ -1903,6 +1903,8 @@ if (newChatBtn) {
       if (typeof appendMessage === "function") {
         appendMessage("assistant", "Hey! Nayi shuruwat? Batao, kya chal raha hai?");
       }
+      const dropdown = document.getElementById("dropdownMenu");
+if (dropdown) dropdown.style.display = "none";
 
     } catch (err) {
       console.error("Archive Error:", err);
