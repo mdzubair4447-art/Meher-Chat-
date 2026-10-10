@@ -320,12 +320,12 @@ async function saveChatToCloud(userId) {
 // OpenRouter LLM Call with Natural Delay & Multi-Bubble Delivery
 // OpenRouter LLM Call via Secure Vercel Serverless Backend
 // Upgraded: Token-Limited Context + Multi-Bubble Realistic Texting
+// Upgraded: Multi-Bubble + Dynamic Voice Note Playback
 async function triggerMeherReply(userMessage) {
   setTyping(true);
   conversationHistory.push({ role: "user", content: userMessage });
 
   try {
-    // 1. Token Overflow Fix: System prompt + aakhiri 12 messages hi API ko bhejna
     const contextPayload = [
       conversationHistory[0], 
       ...conversationHistory.slice(1).slice(-12)
@@ -352,7 +352,13 @@ async function triggerMeherReply(userMessage) {
         saveChatToCloud(currentUser.uid);
       }
 
-      // 2. Multi-Bubble Fix: Replies ko alag-alag bubbles mein todna
+      // Voice Playback (Jab Meher audio bhejegi tab bajega)
+      if (data.audio) {
+        const sound = new Audio(data.audio);
+        sound.play().catch(e => console.warn("Audio play blocked by browser:", e));
+      }
+
+      // Multi-Bubble Delivery
       const messageParts = fullReply.split(/\n+/).filter(part => part.trim().length > 0);
       
       let currentDelay = 600;
@@ -378,7 +384,7 @@ async function triggerMeherReply(userMessage) {
     setTyping(false);
     appendMessage("Mera net thoda issue kar raha hai, ek baar fir se bhej?", "meher");
   }
-}
+  }
 
 // Send Message Handlers
 function handleSendMessage() {
