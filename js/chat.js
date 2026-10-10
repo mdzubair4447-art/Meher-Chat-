@@ -277,7 +277,9 @@ const conversationHistory = [
 async function loadChatHistory(userId) {
   try {
     const doc = await db.collection("users").doc(userId).get();
-    if (doc.exists && doc.data().history) {
+    if (doc.exists && doc.data().history && doc.data().history.length > 0) {
+      // Purani chat mil gayi: Screen ko clean karke sirf real chat load karo
+      chatContainer.innerHTML = '';
       const savedHistory = doc.data().history;
       savedHistory.forEach(item => {
         if (item.role === "user") {
@@ -288,11 +290,18 @@ async function loadChatHistory(userId) {
           conversationHistory.push(item);
         }
       });
-            const container = document.querySelector('.chat-container') || document.getElementById('chatMessages') || chatContainer;
+      const container = document.querySelector('.chat-container') || chatContainer;
       if (container) {
         container.scrollTop = container.scrollHeight;
       }
+    } else {
+      // Agar user ekdum naya hai aur koi purani chat nahi hai, tabhi starting hooks render karo
+      loadInitialChatHooks();
     }
+  } catch (err) {
+    console.error("Firestore history load error:", err);
+  }
+}
   } catch (err) {
     console.error("Firestore history load error:", err);
   }
@@ -434,10 +443,6 @@ if (menuClearChat) menuClearChat.addEventListener('click', clearAllMessages);
 const rowClearHistory = document.getElementById('rowClearHistory');
 if (rowClearHistory) rowClearHistory.addEventListener('click', clearAllMessages);
 
-// Page reload par agar chatContainer khula ho toh initial hooks render kar do
-document.addEventListener('DOMContentLoaded', () => {
-  loadInitialChatHooks();
-});
   // ==========================================
 // 100% ANTI-DOWNLOAD & CONTEXT MENU BLOCK
 // ==========================================
