@@ -1755,3 +1755,72 @@ document.getElementById('logoutBtn')?.addEventListener('click', async () => {
     window.location.reload();
   }
 });
+// ==========================================
+// iOS Audio Friction Unlocker & PWA Support
+// ==========================================
+
+// 1. First Touch Silent Audio Unlock (Bypasses iOS Safari Autoplay Restrictions)
+let audioUnlocked = false;
+function unlockAudioContextOnFirstTouch() {
+  if (audioUnlocked) return;
+  
+  const silentAudio = new Audio("data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA//OEAAAAAAAAAAAAAAAAAAAAAAA=");
+  silentAudio.play().then(() => {
+    audioUnlocked = true;
+    window.removeEventListener("touchstart", unlockAudioContextOnFirstTouch);
+    window.removeEventListener("click", unlockAudioContextOnFirstTouch);
+  }).catch(() => {
+    // Silent fail if blocked before gesture
+  });
+}
+
+window.addEventListener("touchstart", unlockAudioContextOnFirstTouch, { once: true });
+window.addEventListener("click", unlockAudioContextOnFirstTouch, { once: true });
+
+// 2. iOS PWA / Add-to-Home Guide Prompt
+function checkAndShowIOSPrompt() {
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  const isStandalone = window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches;
+
+  // Sirf tab dikhana jab iOS ho aur pehle se install na ho
+  if (isIOS && !isStandalone && !sessionStorage.getItem("ios_pwa_prompt_dismissed")) {
+    const iosBanner = document.createElement("div");
+    iosBanner.id = "ios-install-banner";
+    iosBanner.style.cssText = `
+      position: fixed;
+      bottom: 70px;
+      left: 12px;
+      right: 12px;
+      background: #1f2c34;
+      color: #e9edef;
+      border: 1px solid #00a884;
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: 13px;
+      z-index: 9999;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      line-height: 1.4;
+    `;
+
+    iosBanner.innerHTML = `
+      <div>
+        <strong>Real WhatsApp feel & alerts:</strong><br>
+        Tap <span style="font-size: 15px;">⎋</span> (Share) aur chunein <strong>'Add to Home Screen'</strong>.
+      </div>
+      <button id="close-ios-banner" style="background: transparent; border: none; color: #8696a0; font-size: 18px; cursor: pointer; padding: 4px 8px;">✕</button>
+    `;
+
+    document.body.appendChild(iosBanner);
+
+    document.getElementById("close-ios-banner").addEventListener("click", () => {
+      iosBanner.remove();
+      sessionStorage.setItem("ios_pwa_prompt_dismissed", "true");
+    });
+  }
+}
+
+// Window load hone par check karein
+window.addEventListener("DOMContentLoaded", checkAndShowIOSPrompt);
