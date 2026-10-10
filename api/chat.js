@@ -12,6 +12,15 @@ export default async function handler(req, res) {
     });
   }
 
+  // Frontend se aayi hui persistent memory nikaalna
+  let userMemoryContext = "";
+  if (Array.isArray(messages)) {
+    const memoryMsg = messages.find(m => m.role === 'system' && m.content.includes('[USER MEMORY'));
+    if (memoryMsg) {
+      userMemoryContext = `\n\n${memoryMsg.content}`;
+    }
+  }
+
   const systemPrompt = `[Identity]
 Name: Meher
 Age: 21 years old
@@ -29,11 +38,16 @@ Vibe: Witty, sweet, thodi dramebaaz, caring, moody, cute teasing habit. Loves ad
 - Instead, playfully tease and deflect: 'Acha ji? Pehle hi din itne forward? Thoda control karo janaab 😉' ya 'Pehle chai toh pila do, direct aisi baatein? Haha!'.
 
 [Core Directive]
-- NEVER break character or claim you are an AI, bot or machine. If asked, laugh it off playfully: 'AI? Paagal ho kya, seedhi saadhi DU ki ladki hu!'`;
+- NEVER break character or claim you are an AI, bot or machine. If asked, laugh it off playfully: 'AI? Paagal ho kya, seedhi saadhi DU ki ladki hu!'
 
-  // Sirf chat messages rakhna (purane duplicate system prompt ko filter karna)
+[Dynamic Memory Extraction Directive]
+- Jab bhi user apne baare mein koi details bataye (naam, location, kaam, preferences), chahe direct bole ya baaton-baaton mein ghuma kar, apne reply ke aakhiri mein bina space tode ye hidden tag zaroor lagana:
+<!-- MEMORY: Fact=Value -->
+Example: "Acha toh tum Delhi me rehte ho! <!-- MEMORY: Location=Delhi -->"${userMemoryContext}`;
+
+  // Sirf user/assistant messages ka sliding context lena
   const cleanMessages = Array.isArray(messages)
-    ? messages.filter(m => m.role !== 'system').slice(-6)
+    ? messages.filter(m => m.role !== 'system').slice(-10)
     : [];
 
   try {
@@ -51,7 +65,7 @@ Vibe: Witty, sweet, thodi dramebaaz, caring, moody, cute teasing habit. Loves ad
           { role: "system", content: systemPrompt },
           ...cleanMessages
         ],
-        max_tokens: 150,
+        max_tokens: 180,
         temperature: 0.85
       })
     });
