@@ -1759,24 +1759,62 @@ document.getElementById('logoutBtn')?.addEventListener('click', async () => {
 // iOS Audio Friction Unlocker & PWA Support
 // ==========================================
 
-// 1. First Touch Silent Audio Unlock (Bypasses iOS Safari Autoplay Restrictions)
-let audioUnlocked = false;
-function unlockAudioContextOnFirstTouch() {
-  if (audioUnlocked) return;
-  
-  const silentAudio = new Audio("data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA//OEAAAAAAAAAAAAAAAAAAAAAAA=");
-  silentAudio.play().then(() => {
-    audioUnlocked = true;
-    window.removeEventListener("touchstart", unlockAudioContextOnFirstTouch);
-    window.removeEventListener("click", unlockAudioContextOnFirstTouch);
-  }).catch(() => {
-    // Silent fail if blocked before gesture
-  });
+let audioContextInstance = null;
+
+function initIOSAudioEngine() {
+  try {
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    if (AudioContext && !audioContextInstance) {
+      audioContextInstance = new AudioContext();
+      
+      const buffer = audioContextInstance.createBuffer(1, 1, 22050);
+      const source = audioContextInstance.createBufferSource();
+      source.buffer = buffer;
+      source.connect(audioContextInstance.destination);
+      source.start(0);
+
+      if (audioContextInstance.state === "suspended") {
+        audioContextInstance.resume();
+      }
+    }
+  } catch (e) {
+    console.warn("Audio Context Init Fallback:", e);
+  }
 }
 
-window.addEventListener("touchstart", unlockAudioContextOnFirstTouch, { once: true });
-window.addEventListener("click", unlockAudioContextOnFirstTouch, { once: true });
+["touchstart", "click", "keydown"].forEach((evt) => {
+  window.addEventListener(evt, initIOSAudioEngine, { once: true });
+});
 
+function notifyIOSMuteState() {
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  if (isIOS && !sessionStorage.getItem("ios_mute_tip_shown")) {
+    const tip = document.createElement("div");
+    tip.style.cssText = `
+      position: fixed;
+      top: 65px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(31, 44, 52, 0.95);
+      color: #ffd279;
+      border: 1px solid #ffd279;
+      border-radius: 20px;
+      padding: 6px 14px;
+      font-size: 11px;
+      z-index: 10000;
+      pointer-events: none;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      animation: fadeInOut 4s forwards;
+    `;
+    tip.textContent = "🔊 Awaz na aaye toh iPhone ka side silent switch check karein";
+    document.body.appendChild(tip);
+    sessionStorage.setItem("ios_mute_tip_shown", "true");
+
+    setTimeout(() => tip.remove(), 4000);
+  }
+}
+
+window.notifyIOSMuteState = notifyIOSMuteState;
 // 2. iOS PWA / Add-to-Home Guide Prompt
 function checkAndShowIOSPrompt() {
   const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
