@@ -215,19 +215,25 @@ function loadInitialChatHooks() {
     }
 
 // Voice Note Player Toggle
+// Voice Note Player Toggle (Crash-proof safe hook)
 window.toggleEntryAudio = function(btn) {
   const audio = document.getElementById('entryAudio');
   if (!audio) return;
 
   if (audio.paused) {
-    audio.play();
-    btn.innerText = '⏸';
+    audio.play().then(() => {
+      btn.innerText = '⏸';
+    }).catch(() => {
+      console.log('Intro audio missing or blocked, handled safely.');
+      btn.innerText = '▶';
+    });
     audio.onended = () => { btn.innerText = '▶'; };
   } else {
     audio.pause();
     btn.innerText = '▶';
   }
 };
+
   // Profile DM Button Click Trigger
 const profileDmBtn = document.getElementById('profileDmBtn');
 if (profileDmBtn) {
@@ -258,6 +264,58 @@ function appendMessage(text, sender = 'user') {
   chatContainer.appendChild(msgRow);
 
   chatContainer.scrollTop = chatContainer.scrollHeight;
+}
+// Dynamic Voice Note Bubble Builder (WhatsApp Style)
+function appendVoiceBubble(audioSrc, sender = "meher") {
+  const messageDiv = document.createElement("div");
+  messageDiv.className = `message-bubble ${sender}-bubble voice-message-bubble`;
+
+  const playBtn = document.createElement("button");
+  playBtn.className = "voice-play-btn";
+  playBtn.innerHTML = "▶";
+
+  const trackBar = document.createElement("div");
+  trackBar.className = "voice-track-bar";
+  trackBar.innerHTML = `<span class="voice-progress"></span><span class="voice-duration">0:00</span>`;
+
+  messageDiv.appendChild(playBtn);
+  messageDiv.appendChild(trackBar);
+  chatContainer.appendChild(messageDiv);
+  chatContainer.scrollTop = chatContainer.scrollHeight;
+
+  const audio = new Audio(audioSrc);
+
+  playBtn.addEventListener("click", () => {
+    if (audio.paused) {
+      audio.play().catch(e => console.warn("Audio play blocked:", e));
+      playBtn.innerHTML = "⏸";
+    } else {
+      audio.pause();
+      playBtn.innerHTML = "▶";
+    }
+  });
+
+  audio.addEventListener("timeupdate", () => {
+    const progress = (audio.currentTime / audio.duration) * 100 || 0;
+    const progressBar = trackBar.querySelector(".voice-progress");
+    const durationLabel = trackBar.querySelector(".voice-duration");
+    if (progressBar) progressBar.style.width = `${progress}%`;
+    if (durationLabel) {
+      const mins = Math.floor(audio.currentTime / 60);
+      const secs = Math.floor(audio.currentTime % 60).toString().padStart(2, "0");
+      durationLabel.innerText = `${mins}:${secs}`;
+    }
+  });
+
+  audio.addEventListener("ended", () => {
+    playBtn.innerHTML = "▶";
+  });
+
+  audio.play().then(() => {
+    playBtn.innerHTML = "⏸";
+  }).catch(() => {
+    playBtn.innerHTML = "▶";
+  });
 }
 
 // Meher Master Brain & Persona System Prompt
@@ -352,12 +410,14 @@ async function triggerMeherReply(userMessage) {
         saveChatToCloud(currentUser.uid);
       }
 
-      // Voice Playback (Jab Meher audio bhejegi tab bajega)
+      // Voice Reply: Screen par WhatsApp Voice Bubble dikhana
       if (data.audio) {
-        const sound = new Audio(data.audio);
-        sound.play().catch(e => console.warn("Audio play blocked by browser:", e));
+        setTimeout(() => {
+          setTyping(false);
+          appendVoiceBubble(data.audio, "meher");
+        }, 500);
       }
-
+      
       // Multi-Bubble Delivery
       const messageParts = fullReply.split(/\n+/).filter(part => part.trim().length > 0);
       
