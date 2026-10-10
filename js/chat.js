@@ -310,43 +310,64 @@ async function saveChatToCloud(userId) {
 }
 // OpenRouter LLM Call with Natural Delay & Multi-Bubble Delivery
 // OpenRouter LLM Call via Secure Vercel Serverless Backend
+// Upgraded: Token-Limited Context + Multi-Bubble Realistic Texting
 async function triggerMeherReply(userMessage) {
   setTyping(true);
   conversationHistory.push({ role: "user", content: userMessage });
 
   try {
+    // 1. Token Overflow Fix: System prompt + aakhiri 12 messages hi API ko bhejna
+    const contextPayload = [
+      conversationHistory[0], 
+      ...conversationHistory.slice(1).slice(-12)
+    ];
+
     const response = await fetch("/api/chat", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        messages: conversationHistory
+        messages: contextPayload
       })
     });
 
     const data = await response.json();
 
     if (data && data.reply) {
-      const reply = data.reply.trim();
-      conversationHistory.push({ role: "assistant", content: reply });
+      const fullReply = data.reply.trim();
+      conversationHistory.push({ role: "assistant", content: fullReply });
+      
       const currentUser = firebase.auth().currentUser;
       if (currentUser) {
         saveChatToCloud(currentUser.uid);
       }
-      const delay = Math.min(Math.max(reply.length * 35, 1200), 3000);
-      setTimeout(() => {
-        setTyping(false);
-        appendMessage(reply, 'meher');
-      }, delay);
+
+      // 2. Multi-Bubble Fix: Replies ko alag-alag bubbles mein todna
+      const messageParts = fullReply.split(/\n+/).filter(part => part.trim().length > 0);
+      
+      let currentDelay = 600;
+      messageParts.forEach((part, index) => {
+        setTimeout(() => {
+          setTyping(false);
+          appendMessage(part.trim(), "meher");
+          
+          if (index < messageParts.length - 1) {
+            setTyping(true);
+          }
+        }, currentDelay);
+
+        currentDelay += Math.min(Math.max(part.length * 30, 800), 1600);
+      });
+
     } else {
       setTyping(false);
-      appendMessage("WiFi ajeeb chal raha hai mera hostel ka... fir se bolo na!", 'meher');
+      appendMessage("Yr network thoda slow lag rha hai, dobara bolna?", "meher");
     }
-  } catch (error) {
+  } catch (err) {
+    console.error("Meher response error:", err);
     setTyping(false);
-    console.error("API Error:", error);
-    appendMessage("Yaar connection drop ho gaya mera, ek second baad text karna!", 'meher');
+    appendMessage("Mera net thoda issue kar raha hai, ek baar fir se bhej?", "meher");
   }
 }
 
