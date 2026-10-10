@@ -428,16 +428,6 @@ async function triggerMeherReply(userMessage) {
           db.collection("users").doc(currentUser.uid).set({ memory: updatedMemory }, { merge: true });
         }
       }
-
-      const fullReply = rawReply;
-      conversationHistory.push({ role: "assistant", content: fullReply });
-
-      const currentUser = firebase.auth().currentUser;
-      if (currentUser) {
-        saveChatToCloud(currentUser.uid);
-        }
-      }
-
       const fullReply = rawReply;
       conversationHistory.push({ role: "assistant", content: fullReply });
 
@@ -445,9 +435,7 @@ async function triggerMeherReply(userMessage) {
       if (currentUser) {
         saveChatToCloud(currentUser.uid);
       }
-      }
-      }
-
+ 
     // Voice Reply: Audio Caching + Voice Bubble Delivery
     const audioKey = "voice_" + fullReply.slice(0, 30).toLowerCase().replace(/[^a-z0-9]/g, "_");
     const cachedVoice = localStorage.getItem(audioKey);
