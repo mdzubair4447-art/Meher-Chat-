@@ -411,31 +411,58 @@ async function triggerMeherReply(userMessage) {
     const data = await response.json();
 
     if (data && data.reply) {
-      const fullReply = data.reply.trim();
-      conversationHistory.push({ role: "assistant", content: fullReply });
-      
-      const currentUser = firebase.auth().currentUser;
-      if (currentUser) {
-        saveChatToCloud(currentUser.uid);
-              // Auto-extract personal facts
-      const nameMatch = userMessage.match(/(?:mera naam|my name is|i am)\s+([a-zA-Z]+)/i);
-      if (nameMatch) {
-        const detectedName = nameMatch[1];
-        const updatedMemory = (localStorage.getItem("meher_user_memory") || "") + `\n- User's Name: ${detectedName}`;
+      let rawReply = data.reply.trim();
+
+      // Hidden Memory Tag extract karna
+      const memoryMatch = rawReply.match(/<!-- MEMORY:\s*(.*?) -->/i);
+      if (memoryMatch) {
+        const extractedFacts = memoryMatch[1].trim();
+        rawReply = rawReply.replace(/<!-- MEMORY:\s*(.*?) -->/i, "").trim();
+
+        const prevMemory = localStorage.getItem("meher_user_memory") || "";
+        const updatedMemory = prevMemory ? `${prevMemory}\n- ${extractedFacts}` : `- ${extractedFacts}`;
         localStorage.setItem("meher_user_memory", updatedMemory);
+
+        const currentUser = firebase.auth().currentUser;
         if (currentUser) {
           db.collection("users").doc(currentUser.uid).set({ memory: updatedMemory }, { merge: true });
         }
       }
+
+      const fullReply = rawReply;
+      conversationHistory.push({ role: "assistant", content: fullReply });
+
+      const currentUser = firebase.auth().currentUser;
+      if (currentUser) {
+        saveChatToCloud(currentUser.uid);
+        }
       }
 
-      // Voice Reply: Screen par WhatsApp Voice Bubble dikhana
-      if (data.audio) {
-        setTimeout(() => {
-          setTyping(false);
-          appendVoiceBubble(data.audio, "meher");
-        }, 500);
+      const fullReply = rawReply;
+      conversationHistory.push({ role: "assistant", content: fullReply });
+
+      const currentUser = firebase.auth().currentUser;
+      if (currentUser) {
+        saveChatToCloud(currentUser.uid);
       }
+      }
+      }
+
+    // Voice Reply: Audio Caching + Voice Bubble Delivery
+    const audioKey = "voice_" + fullReply.slice(0, 30).toLowerCase().replace(/[^a-z0-9]/g, "_");
+    const cachedVoice = localStorage.getItem(audioKey);
+    const finalAudio = data.audio || cachedVoice;
+
+    if (finalAudio) {
+      if (data.audio && !cachedVoice) {
+        try { localStorage.setItem(audioKey, data.audio); } catch (e) {}
+      }
+      setTimeout(() => {
+        setTyping(false);
+        if (window.notifyIOSMuteState) window.notifyIOSMuteState();
+        appendVoiceBubble(finalAudio, "meher");
+      }, 500);
+        }
       
       // Multi-Bubble Delivery
       const messageParts = fullReply.split(/\n+/).filter(part => part.trim().length > 0);
